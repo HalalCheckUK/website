@@ -161,7 +161,7 @@ if(DEMO){
   };
   api={user:async()=>({email:'halalcheckuk@gmail.com'}),signIn:async()=>{},signOut:async()=>location.reload(),
     overview:async()=>demo.overview,queue:async()=>demo.queue,reports:async()=>demo.reports,products:async q=>demo.products.filter(p=>(p.name+p.brand+p.barcode).toLowerCase().includes((q||'').toLowerCase())),
-    activity:async()=>demo.activity,decide:async(b,a)=>{demo.queue=demo.queue.filter(x=>x.barcode!==b)},resolve:async id=>{demo.reports=demo.reports.filter(x=>x.id!==id)},photo:async()=>null};
+    activity:async()=>demo.activity,del:async b=>{demo.products=demo.products.filter(x=>x.barcode!==b)},edit:async(b,n,br)=>{const p=demo.products.find(x=>x.barcode===b);if(p){p.name=n;p.brand=br}},decide:async(b,a)=>{demo.queue=demo.queue.filter(x=>x.barcode!==b)},resolve:async id=>{demo.reports=demo.reports.filter(x=>x.id!==id)},photo:async()=>null};
 }else{
   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
   const rpc=async(n,a)=>{const{data,error}=await sb.rpc(n,a||{});if(error)throw new Error(error.message);return data};
@@ -171,7 +171,7 @@ if(DEMO){
     signOut:async()=>{await sb.auth.signOut();location.reload()},
     overview:()=>rpc('admin_overview'),queue:()=>rpc('admin_review_queue'),reports:()=>rpc('admin_reports',{p_open_only:true}),
     products:q=>rpc('admin_products',{p_query:q||''}),activity:()=>rpc('admin_recent_activity'),
-    decide:(b,a)=>rpc('admin_decide',{p_barcode:b,p_action:a}),resolve:id=>rpc('admin_resolve_report',{p_id:id}),
+    decide:(b,a)=>rpc('admin_decide',{p_barcode:b,p_action:a}),resolve:id=>rpc('admin_resolve_report',{p_id:id}),del:b=>rpc('admin_delete_product',{p_barcode:b}),edit:(b,n,br)=>rpc('admin_update_product',{p_barcode:b,p_name:n,p_brand:br}),
     photo:async path=>{const{data}=await sb.storage.from(BUCKET).createSignedUrl(path,3600);return data?.signedUrl||null}
   };
 }
@@ -255,7 +255,7 @@ function setBadges(o){$('#bReview').textContent=o.waiting_review;$('#bReports').
 async function productRows(q){
   const list=await api.products(q);const box=$('#res');
   if(!list.length){box.innerHTML='<div class="empty">No products found.</div>';return}
-  box.innerHTML=`<table><tr><th>Product</th><th>Verdict</th><th>Trust</th><th>Reports</th><th></th></tr>${list.map(p=>`<tr data-b="${esc(p.barcode)}"><td><b>${esc(p.name)}</b><div class="s" style="color:var(--muted);font-size:13px">${esc(p.brand||'')} · ${esc(p.barcode)}</div></td><td><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span></td><td>${['confirmed','scholar'].includes(p.trust_level)?'<span class="pill ver">Verified</span>':esc(p.trust_level||'')}</td><td>${num(p.halal_claims)}</td><td style="white-space:nowrap"><button class="btn sm" data-a="approve">Halal</button> <button class="btn sm amber" data-a="doubtful">Doubtful</button> <button class="btn sm red" data-a="haram">Haram</button></td></tr>`).join('')}</table>`;
+  box.innerHTML=`<table><tr><th>Product</th><th>Verdict</th><th>Trust</th><th>Reports</th><th></th></tr>${list.map(p=>`<tr data-b="${esc(p.barcode)}"><td><b>${esc(p.name)}</b><div class="s" style="color:var(--muted);font-size:13px">${esc(p.brand||'')} · ${esc(p.barcode)}</div></td><td><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span></td><td>${['confirmed','scholar'].includes(p.trust_level)?'<span class="pill ver">Verified</span>':esc(p.trust_level||'')}</td><td>${num(p.halal_claims)}</td><td style="white-space:nowrap"><button class="btn sm" data-a="approve">Halal</button> <button class="btn sm amber" data-a="doubtful">Doubtful</button> <button class="btn sm red" data-a="haram">Haram</button> <button class="btn sm" data-edit="1">Edit</button> <button class="btn sm" data-del="1" title="Delete this product" style="border-color:#c0392b;color:#c0392b">Delete</button></td></tr>`).join('')}</table>`;
 }
 
 let current='overview';
@@ -272,6 +272,24 @@ document.addEventListener('click',async e=>{
   const nav=e.target.closest('#nav button');if(nav)return show(nav.dataset.v);
   if(e.target.matches('[data-zoom]')){const l=document.createElement('div');l.className='lightbox';l.innerHTML=`<img src="${esc(e.target.src)}" alt="">`;l.onclick=()=>l.remove();document.body.append(l);return}
   if(e.target.id==='go')return productRows($('#q').value);
+  const ed=e.target.closest('[data-edit]');
+  if(ed){
+    const row=ed.closest('[data-b]');const b=row.dataset.b;
+    const oldName=row.querySelector('b').textContent;
+    const oldBrand=(row.querySelector('.s').textContent.split(' · ')[0]||'').trim();
+    const n=prompt('Product name:',oldName);if(n===null)return;
+    if(!n.trim()){toast('The name cannot be empty');return}
+    const br=prompt('Brand (leave empty for none):',oldBrand);if(br===null)return;
+    try{await api.edit(b,n,br);toast('Saved');productRows($('#q').value)}catch(err){toast('Error: '+err.message)}
+    return}
+  const del=e.target.closest('[data-del]');
+  if(del){
+    const row=del.closest('[data-b]');const b=row.dataset.b;
+    const name=row.querySelector('b').textContent;
+    if(!confirm('Delete "'+name+'" ('+b+') for good?\nIts votes and reports are deleted too. This cannot be undone.'))return;
+    del.disabled=true;
+    try{await api.del(b);toast('Deleted');productRows($('#q').value)}catch(err){toast('Error: '+err.message);del.disabled=false}
+    return}
   const dec=e.target.closest('[data-a]');
   if(dec){
     const row=dec.closest('[data-b]');const b=row.dataset.b,a=dec.dataset.a;
