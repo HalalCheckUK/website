@@ -239,7 +239,7 @@ const views={
   async reports(){
     const r=await api.reports();$('#bReports').textContent=r.length;
     if(!r.length)return '<div class="card empty">No open reports.</div>';
-    return `<div class="card list">${r.map(x=>`<div class="row" data-id="${x.id}"><div style="flex:1"><div class="t">${esc(x.name||'Unknown product')} <span class="pill ${esc(x.verdict||'doubtful')}">${esc(x.verdict||'?')}</span></div><div class="s">${esc(x.barcode)} · ${ago(x.created_at)}</div><div style="margin-top:6px;white-space:pre-line">${esc(x.note||'')}</div></div><button class="btn sm ghost" data-resolve>Mark done</button></div>`).join('')}</div>`;
+    return `<div class="card list">${r.map(x=>`<div class="row" data-id="${x.id}" data-b="${esc(x.barcode)}"><div style="flex:1"><div class="t">${esc(x.name||'Unknown product')} <span class="pill ${esc(x.verdict||'doubtful')}">${esc(x.verdict||'?')}</span></div><div class="s">${esc(x.barcode)} · ${ago(x.created_at)}</div><div style="margin-top:6px;white-space:pre-line">${esc(x.note||'')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:260px"><button class="btn sm" data-a="approve">Halal</button><button class="btn sm amber" data-a="doubtful">Doubtful</button><button class="btn sm red" data-a="haram">Haram</button><button class="btn sm ghost" data-resolve>Mark done</button></div></div>`).join('')}</div>`;
   },
   async products(){
     return `<div class="search"><input type="search" id="q" placeholder="Search name, brand or barcode"><button class="btn" id="go">Search</button></div><div id="res" class="card"><div class="empty">Loading…</div></div>`;
