@@ -146,7 +146,7 @@ if(DEMO){
       {barcode:'5012345678900',name:'Beef burgers 4 pack',brand:'Lidl',verdict:'haram',trust_level:'database',ingredients_text:'Beef (92%), rusk (wheat flour), water, salt, spices.',halal_claims:1,agree_count:0,disagree_count:1,notes:['Halal label seen on the pack (customer report)'],photos:[]},
       {barcode:'8801234567890',name:'Marshmallows',brand:'Sweet Co',verdict:'doubtful',trust_level:'label_checked',ingredients_text:'Sugar, glucose syrup, gelatine, flavouring.',halal_claims:2,agree_count:2,disagree_count:2,notes:['Halal label seen on the pack (customer report)'],photos:[]}],
     reports:[
-      {id:1,barcode:'5000000000011',name:'Chocolate cake',verdict:'doubtful',note:'Reason: It should be Halal\nNote: Vegetarian label on the box',created_at:new Date(Date.now()-3600e3).toISOString()},
+      {id:1,barcode:'5000000000011',name:'Chocolate cake',brand:'Demo Bakery',image_url:null,ingredients_text:'Sugar, flour, eggs, cocoa, gelatine, flavouring',verdict:'doubtful',note:'Reason: It should be Halal\nNote: Vegetarian label on the box',created_at:new Date(Date.now()-3600e3).toISOString()},
       {id:2,barcode:'5000000000028',name:'Cheese slices',verdict:'halal',note:'Reason: The ingredients are wrong or out of date',created_at:new Date(Date.now()-9e6).toISOString()},
       {id:3,barcode:'5000000000035',name:'Ham slices',verdict:'haram',note:'Reason: Something else\nNote: this one is turkey ham',created_at:new Date(Date.now()-86400e3).toISOString()}],
     products:[
@@ -161,7 +161,7 @@ if(DEMO){
   };
   api={user:async()=>({email:'halalcheckuk@gmail.com'}),signIn:async()=>{},signOut:async()=>location.reload(),
     overview:async()=>demo.overview,queue:async()=>demo.queue,reports:async()=>demo.reports,products:async q=>demo.products.filter(p=>(p.name+p.brand+p.barcode).toLowerCase().includes((q||'').toLowerCase())),
-    activity:async()=>demo.activity,del:async b=>{demo.products=demo.products.filter(x=>x.barcode!==b)},edit:async(b,n,br)=>{const p=demo.products.find(x=>x.barcode===b);if(p){p.name=n;p.brand=br}},decide:async(b,a)=>{demo.queue=demo.queue.filter(x=>x.barcode!==b)},resolve:async id=>{demo.reports=demo.reports.filter(x=>x.id!==id)},photo:async()=>null};
+    activity:async()=>demo.activity,del:async b=>{demo.products=demo.products.filter(x=>x.barcode!==b)},edit:async(b,n,br)=>{const p=demo.products.find(x=>x.barcode===b);if(p){p.name=n;p.brand=br}},decide:async(b,a)=>{demo.queue=demo.queue.filter(x=>x.barcode!==b)},resolve:async id=>{demo.reports=demo.reports.filter(x=>x.id!==id)},delReport:async id=>{demo.reports=demo.reports.filter(x=>x.id!==id)},photo:async()=>null};
 }else{
   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
   const rpc=async(n,a)=>{const{data,error}=await sb.rpc(n,a||{});if(error)throw new Error(error.message);return data};
@@ -171,7 +171,7 @@ if(DEMO){
     signOut:async()=>{await sb.auth.signOut();location.reload()},
     overview:()=>rpc('admin_overview'),queue:()=>rpc('admin_review_queue'),reports:()=>rpc('admin_reports',{p_open_only:true}),
     products:q=>rpc('admin_products',{p_query:q||''}),activity:()=>rpc('admin_recent_activity'),
-    decide:(b,a)=>rpc('admin_decide',{p_barcode:b,p_action:a}),resolve:id=>rpc('admin_resolve_report',{p_id:id}),del:b=>rpc('admin_delete_product',{p_barcode:b}),edit:(b,n,br)=>rpc('admin_update_product',{p_barcode:b,p_name:n,p_brand:br}),
+    decide:(b,a)=>rpc('admin_decide',{p_barcode:b,p_action:a}),resolve:id=>rpc('admin_resolve_report',{p_id:id}),delReport:id=>rpc('admin_delete_report',{p_id:id}),del:b=>rpc('admin_delete_product',{p_barcode:b}),edit:(b,n,br)=>rpc('admin_update_product',{p_barcode:b,p_name:n,p_brand:br}),
     photo:async path=>{const{data}=await sb.storage.from(BUCKET).createSignedUrl(path,3600);return data?.signedUrl||null}
   };
 }
@@ -228,18 +228,34 @@ const views={
       const notes=(p.notes||[]).map(n=>String(n).replace(/\.?\s*Photo:\s*\S+/,'')).filter(Boolean);
       return `<div class="card rv" data-b="${esc(p.barcode)}">
         <div class="photos">${urls.length?urls.map(u=>`<img src="${esc(u)}" alt="Halal label photo" data-zoom>`).join(''):'<div class="noimg">No photo sent</div>'}</div>
-        <div><h3>${esc(p.name)}</h3>
+        <div><h3>${esc(p.name||'Unnamed product')}</h3>
         <div class="meta"><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span><span>${esc(p.brand||'No brand')}</span><span>· ${esc(p.barcode)}</span><span>· ${num(p.halal_claims)} halal-label report${p.halal_claims==1?'':'s'}</span><span>· ${num(p.agree_count)} agree / ${num(p.disagree_count)} disagree</span></div>
         <div class="ing">${esc(p.ingredients_text||'No ingredients saved.')}</div>
         ${notes.length?`<div class="notes">Notes: ${notes.slice(0,3).map(esc).join(' · ')}</div>`:''}
-        <div class="actions"><button class="btn" data-a="approve">Approve as Halal</button><button class="btn red" data-a="haram">Keep Haram</button><button class="btn amber" data-a="doubtful">Mark Doubtful</button><button class="btn ghost" data-a="dismiss">Dismiss</button></div></div></div>`;
+        <div class="actions"><button class="btn ghost" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}">Edit name and brand</button><button class="btn" data-a="approve">Approve as Halal</button><button class="btn red" data-a="haram">Keep Haram</button><button class="btn amber" data-a="doubtful">Mark Doubtful</button><button class="btn ghost" data-a="dismiss">Dismiss</button></div></div></div>`;
     }));
     return `<div class="grid">${cards.join('')}</div><p class="sub" style="margin-top:14px"><b>Approve</b> shows Halal with "Confirmed by Halal Check UK". <b>Keep Haram</b> clears the reports. Check the photo and ingredients first.</p>`;
   },
   async reports(){
-    const r=await api.reports();$('#bReports').textContent=r.length;
-    if(!r.length)return '<div class="card empty">No open reports.</div>';
-    return `<div class="card list">${r.map(x=>`<div class="row" data-id="${x.id}" data-b="${esc(x.barcode)}"><div style="flex:1"><div class="t">${esc(x.name||'Unknown product')} <span class="pill ${esc(x.verdict||'doubtful')}">${esc(x.verdict||'?')}</span></div><div class="s">${esc(x.barcode)} · ${ago(x.created_at)}</div><div style="margin-top:6px;white-space:pre-line">${esc(x.note||'')}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:260px"><button class="btn sm" data-a="approve">Halal</button><button class="btn sm amber" data-a="doubtful">Doubtful</button><button class="btn sm red" data-a="haram">Haram</button><button class="btn sm ghost" data-resolve>Mark done</button></div></div>`).join('')}</div>`;
+    const r=await api.reports();
+    if(!r.length){$('#bReports').textContent=0;return '<div class="card empty">No open reports.</div>'}
+    const groups=new Map();
+    for(const x of r){if(!groups.has(x.barcode))groups.set(x.barcode,[]);groups.get(x.barcode).push(x)}
+    $('#bReports').textContent=groups.size;
+    const cards=await Promise.all([...groups.values()].map(async list=>{
+      const p=list[0];
+      const items=await Promise.all(list.map(async x=>{const path=(String(x.note||'').match(/Photo:\s*(\S+\.jpg)/)||[])[1];const url=path?await api.photo(path).catch(()=>null):null;return {...x,url,text:String(x.note||'').replace(/\.?\s*Photo:\s*\S+/,'')}}));
+      const ids=list.map(x=>x.id).join(',');
+      const img=p.image_url?`<img src="${esc(p.image_url)}" alt="Product picture" data-zoom style="width:96px;height:96px;object-fit:contain;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:zoom-in">`:'<div class="noimg" style="width:96px;height:96px">No picture</div>';
+      const ing=p.ingredients_text?esc(p.ingredients_text):'<i>No ingredients saved for this product.</i>';
+      return `<div class="card" data-b="${esc(p.barcode)}" data-ids="${ids}" style="margin-bottom:12px">
+        <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">${img}
+          <div style="flex:1;min-width:200px"><div class="t">${esc(p.name||'Unknown product')} <span class="pill ${esc(p.verdict||'doubtful')}">${esc(p.verdict||'?')}</span></div>
+          <div class="s">${p.brand?esc(p.brand)+' · ':''}Barcode ${esc(p.barcode)}${p.trust_level?' · '+esc(p.trust_level):''}</div>
+          <div class="notes" style="margin-top:8px"><b>Ingredients:</b> ${ing}</div></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn sm" data-a="approve">Halal</button><button class="btn sm amber" data-a="doubtful">Doubtful</button><button class="btn sm red" data-a="haram">Haram</button><button class="btn sm ghost" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}">Edit name</button><button class="btn sm ghost" data-resolve>Mark done</button><button class="btn sm red" data-delall>Delete</button></div></div>
+        <div style="margin-top:12px;border-top:1px solid var(--line)">${items.map(x=>`<div style="padding:8px 0" data-rid="${x.id}"><div class="s">${ago(x.created_at)} · <a href="#" data-delrep style="color:var(--red)">Delete this report</a></div><div style="white-space:pre-line">${esc(x.text)}</div>${x.url?`<div class="photos" style="margin-top:8px"><img src="${esc(x.url)}" alt="Photo from the report" data-zoom></div>`:''}</div>`).join('')}</div></div>`}));
+    return cards.join('')+'<p class="sub">Halal, Doubtful or Haram changes the product and clears all its reports. Mark done only clears the reports.</p>';
   },
   async products(){
     return `<div class="search"><input type="search" id="q" placeholder="Search name, brand or barcode"><button class="btn" id="go">Search</button></div><div id="res" class="card"><div class="empty">Loading…</div></div>`;
@@ -295,10 +311,22 @@ document.addEventListener('click',async e=>{
     const row=dec.closest('[data-b]');const b=row.dataset.b,a=dec.dataset.a;
     if(a==='approve'&&!confirm('Approve this product as Halal? Check the photo and ingredients first.'))return;
     dec.disabled=true;
-    try{await api.decide(b,a);toast('Saved');current==='products'?productRows($('#q').value):show(current)}catch(err){toast('Error: '+err.message);dec.disabled=false}
+    try{await api.decide(b,a);if(current==='reports'){for(const id of (row.dataset.ids||'').split(',').filter(Boolean))await api.resolve(Number(id))}toast('Saved');current==='products'?productRows($('#q').value):show(current)}catch(err){toast('Error: '+err.message);dec.disabled=false}
     return}
+  const ep=e.target.closest('[data-editp]');
+  if(ep){
+    const box=ep.closest('[data-b]');const b=box.dataset.b;
+    const n=prompt('Product name:',ep.dataset.name||'');if(n===null)return;
+    if(!n.trim()){toast('The name cannot be empty');return}
+    const br=prompt('Brand (leave empty for none):',ep.dataset.brand||'');if(br===null)return;
+    try{await api.edit(b,n,br);toast('Saved');show(current)}catch(err){toast('Error: '+err.message)}
+    return}
+  const dr=e.target.closest('[data-delrep]');
+  if(dr){e.preventDefault();const id=Number(dr.closest('[data-rid]').dataset.rid);if(!confirm('Delete this report for good? This cannot be undone.'))return;try{await api.delReport(id);toast('Report deleted');show('reports')}catch(err){toast('Error: '+err.message)}return}
+  const da=e.target.closest('[data-delall]');
+  if(da){const box=da.closest('[data-ids]');const ids=(box.dataset.ids||'').split(',').filter(Boolean).map(Number);if(!confirm('Delete '+ids.length+' report(s) for this product for good? The product itself is kept. This cannot be undone.'))return;da.disabled=true;try{for(const id of ids)await api.delReport(id);toast('Reports deleted');show('reports')}catch(err){toast('Error: '+err.message);da.disabled=false}return}
   const res=e.target.closest('[data-resolve]');
-  if(res){const id=Number(res.closest('[data-id]').dataset.id);try{await api.resolve(id);toast('Marked done');show('reports')}catch(err){toast('Error: '+err.message)}}
+  if(res){const box=res.closest('[data-ids]');const ids=(box.dataset.ids||'').split(',').filter(Boolean).map(Number);res.disabled=true;try{for(const id of ids)await api.resolve(id);box.remove();toast('Marked done');show('reports')}catch(err){toast('Error: '+err.message);res.disabled=false}}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='q')productRows(e.target.value)});
 $('#out').onclick=()=>api.signOut();
