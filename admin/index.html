@@ -107,6 +107,7 @@ td{padding:11px 10px;border-top:1px solid var(--line);vertical-align:middle}
     <nav class="nav" id="nav">
       <button data-v="overview" class="on">Overview</button>
       <button data-v="review">Review queue <span class="badge warn" id="bReview">0</span></button>
+      <button data-v="added">Added by users <span class="badge warn" id="bAdded">0</span></button>
       <button data-v="reports">Reports <span class="badge" id="bReports">0</span></button>
       <button data-v="products">Products</button>
       <button data-v="activity">Activity</button>
@@ -146,6 +147,9 @@ if(DEMO){
       {barcode:'5028217001202',name:'Chicken seasoning',brand:'Spice House',verdict:'haram',trust_level:'label_checked',ingredients_text:'Kylling, tørret ingefær 3%, tørret hvitløk 3%, salt, pepper, kanel. Kan inneholde spor av trenøtter, hvete, melk, soya, sennep og sulfitt.',halal_claims:3,agree_count:1,disagree_count:3,notes:['Halal label seen on the pack (customer report). Photo: demo/1.jpg','Halal label seen on the pack (customer report)'],photos:[]},
       {barcode:'5012345678900',name:'Beef burgers 4 pack',brand:'Lidl',verdict:'haram',trust_level:'database',ingredients_text:'Beef (92%), rusk (wheat flour), water, salt, spices.',halal_claims:1,agree_count:0,disagree_count:1,notes:['Halal label seen on the pack (customer report)'],photos:[]},
       {barcode:'8801234567890',name:'Marshmallows',brand:'Sweet Co',verdict:'doubtful',trust_level:'label_checked',ingredients_text:'Sugar, glucose syrup, gelatine, flavouring.',halal_claims:2,agree_count:2,disagree_count:2,notes:['Halal label seen on the pack (customer report)'],photos:[]}],
+    added:[
+      {barcode:'5060000000011',name:'Chilli noodles',brand:'Demo Foods',verdict:'doubtful',trust_level:'label_checked',ingredients_text:'Noodles, glycerol (E422), flavour enhancers (E635), salt.',created_at:new Date(Date.now()-1800e3).toISOString(),is_new:true},
+      {barcode:'5060000000028',name:'Tomato soup',brand:'',verdict:'halal',trust_level:'label_checked',ingredients_text:'Tomatoes, water, sugar, salt.',created_at:new Date(Date.now()-86400e3).toISOString(),is_new:false}],
     reports:[
       {id:1,barcode:'5000000000011',name:'Chocolate cake',brand:'Demo Bakery',image_url:null,ingredients_text:'Sugar, flour, eggs, cocoa, gelatine, flavouring',verdict:'doubtful',note:'Reason: It should be Halal\nNote: Vegetarian label on the box',created_at:new Date(Date.now()-3600e3).toISOString()},
       {id:2,barcode:'5000000000028',name:'Cheese slices',verdict:'halal',note:'Reason: The ingredients are wrong or out of date',created_at:new Date(Date.now()-9e6).toISOString()},
@@ -161,7 +165,7 @@ if(DEMO){
       {kind:'Vote agree',barcode:'5012345678901',detail:'',at:new Date(Date.now()-7200e3).toISOString()}]
   };
   api={user:async()=>({email:'halalcheckuk@gmail.com'}),signIn:async()=>{},signOut:async()=>location.reload(),
-    overview:async()=>demo.overview,queue:async()=>demo.queue,reports:async()=>demo.reports,products:async q=>demo.products.filter(p=>(p.name+p.brand+p.barcode).toLowerCase().includes((q||'').toLowerCase())),
+    overview:async()=>demo.overview,queue:async()=>demo.queue,added:async()=>demo.added,seen:async b=>{demo.added.forEach(x=>{if(!b||x.barcode===b)x.is_new=false})},addedCount:async()=>demo.added.filter(x=>x.is_new).length,reports:async()=>demo.reports,products:async q=>demo.products.filter(p=>(p.name+p.brand+p.barcode).toLowerCase().includes((q||'').toLowerCase())),
     activity:async()=>demo.activity,del:async b=>{demo.products=demo.products.filter(x=>x.barcode!==b)},edit:async(b,n,br)=>{const p=demo.products.find(x=>x.barcode===b);if(p){p.name=n;p.brand=br}},decide:async(b,a)=>{demo.queue=demo.queue.filter(x=>x.barcode!==b)},resolve:async id=>{demo.reports=demo.reports.filter(x=>x.id!==id)},delReport:async id=>{demo.reports=demo.reports.filter(x=>x.id!==id)},photo:async()=>null};
 }else{
   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
@@ -170,7 +174,7 @@ if(DEMO){
     user:async()=>{const{data}=await sb.auth.getSession();return data.session?.user||null},
     signIn:async(e,p)=>{const{error}=await sb.auth.signInWithPassword({email:e,password:p});if(error)throw error},
     signOut:async()=>{await sb.auth.signOut();location.reload()},
-    overview:()=>rpc('admin_overview'),queue:()=>rpc('admin_review_queue'),reports:()=>rpc('admin_reports',{p_open_only:true}),
+    overview:()=>rpc('admin_overview'),queue:()=>rpc('admin_review_queue'),added:()=>rpc('admin_user_added'),seen:b=>rpc('admin_mark_seen',{p_barcode:b||null}),addedCount:()=>rpc('admin_user_added_count'),reports:()=>rpc('admin_reports',{p_open_only:true}),
     products:q=>rpc('admin_products',{p_query:q||''}),activity:()=>rpc('admin_recent_activity'),
     decide:(b,a)=>rpc('admin_decide',{p_barcode:b,p_action:a}),resolve:id=>rpc('admin_resolve_report',{p_id:id}),delReport:id=>rpc('admin_delete_report',{p_id:id}),del:b=>rpc('admin_delete_product',{p_barcode:b}),edit:(b,n,br)=>rpc('admin_update_product',{p_barcode:b,p_name:n,p_brand:br}),
     photo:async path=>{const{data}=await sb.storage.from(BUCKET).createSignedUrl(path,3600);return data?.signedUrl||null}
@@ -237,6 +241,18 @@ const views={
     }));
     return `<div class="grid">${cards.join('')}</div><p class="sub" style="margin-top:14px"><b>Approve</b> shows Halal with "Confirmed by Halal Check UK". <b>Keep Haram</b> clears the reports. Check the photo and ingredients first.</p>`;
   },
+  async added(){
+    const list=await api.added();
+    const n=list.filter(x=>x.is_new).length;$('#bAdded').textContent=n;
+    if(!list.length)return '<div class="card empty">Nothing has been added by users yet.</div>';
+    const head=`<div class="search" style="justify-content:space-between;align-items:center"><span class="sub">${num(n)} new · ${num(list.length)} shown (latest 200)</span>${n?'<button class="btn ghost sm" data-seenall>Mark all as seen</button>':''}</div>`;
+    return head+`<div class="grid">${list.map(p=>`<div class="card" data-b="${esc(p.barcode)}">
+      <h3><b class="nm" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}" title="Click to edit the name and brand">${esc(p.name||'Unnamed product')}</b> ${p.is_new?'<span class="pill" style="background:#F5A524;color:#fff">NEW</span>':''}</h3>
+      <div class="meta" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:13px;color:var(--muted)"><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span><span>${esc(p.brand||'No brand')}</span><span>· ${esc(p.barcode)}</span><span>· added ${ago(p.created_at)}</span></div>
+      <div class="ing">${esc(p.ingredients_text||'No ingredients saved.')}</div>
+      <div class="actions"><button class="btn sm" data-a="approve">Approve as Halal</button><button class="btn sm amber" data-a="doubtful">Doubtful</button><button class="btn sm red" data-a="haram">Haram</button>${p.is_new?'<button class="btn sm ghost" data-seen>Mark as seen</button>':''}<button class="btn sm" data-del="1" style="border-color:#c0392b;color:#c0392b;background:#fff">Delete</button></div></div>`).join('')}</div>
+    <p class="sub" style="margin-top:14px">Products saved by app users from a label photo. <b>Approve</b> shows Halal with "Confirmed by Halal Check UK".</p>`;
+  },
   async reports(){
     const r=await api.reports();
     if(!r.length){$('#bReports').textContent=0;return '<div class="card empty">No open reports.</div>'}
@@ -266,8 +282,8 @@ const views={
     return `<div class="card list">${a.map(x=>`<div class="row"><div><div class="t">${esc(x.kind)}</div><div class="s">${esc(x.barcode)}${x.detail?' · '+esc(x.detail):''}</div></div><div class="s">${ago(x.at)}</div></div>`).join('')||'<div class="empty">Nothing yet</div>'}</div>`;
   }
 };
-const meta={overview:['Overview','How the app and the database are doing'],review:['Review queue','Products waiting for your decision'],reports:['Reports','Wrong-result reports from shoppers'],products:['Products','Find a product and change its verdict'],activity:['Activity','The latest things shoppers did']};
-function setBadges(o){$('#bReview').textContent=o.waiting_review;$('#bReports').textContent=o.reports_open}
+const meta={overview:['Overview','How the app and the database are doing'],added:['Added by users','Products saved by app users, newest first'],review:['Review queue','Products waiting for your decision'],reports:['Reports','Wrong-result reports from shoppers'],products:['Products','Find a product and change its verdict'],activity:['Activity','The latest things shoppers did']};
+function setBadges(o){api.addedCount().then(n=>$('#bAdded').textContent=n).catch(()=>{});$('#bReview').textContent=o.waiting_review;$('#bReports').textContent=o.reports_open}
 
 async function productRows(q){
   const list=await api.products(q);const box=$('#res');
@@ -299,20 +315,23 @@ document.addEventListener('click',async e=>{
     const br=prompt('Brand (leave empty for none):',oldBrand);if(br===null)return;
     try{await api.edit(b,n,br);toast('Saved');productRows($('#q').value)}catch(err){toast('Error: '+err.message)}
     return}
+  if(e.target.closest('[data-seenall]')){try{await api.seen(null);toast('All marked as seen');show('added')}catch(err){toast('Error: '+err.message)}return}
+  const sn=e.target.closest('[data-seen]');
+  if(sn){const b=sn.closest('[data-b]').dataset.b;try{await api.seen(b);show('added')}catch(err){toast('Error: '+err.message)}return}
   const del=e.target.closest('[data-del]');
   if(del){
     const row=del.closest('[data-b]');const b=row.dataset.b;
     const name=row.querySelector('b').textContent;
     if(!confirm('Delete "'+name+'" ('+b+') for good?\nIts votes and reports are deleted too. This cannot be undone.'))return;
     del.disabled=true;
-    try{await api.del(b);toast('Deleted');productRows($('#q').value)}catch(err){toast('Error: '+err.message);del.disabled=false}
+    try{await api.del(b);toast('Deleted');current==='added'?show('added'):productRows($('#q').value)}catch(err){toast('Error: '+err.message);del.disabled=false}
     return}
   const dec=e.target.closest('[data-a]');
   if(dec){
     const row=dec.closest('[data-b]');const b=row.dataset.b,a=dec.dataset.a;
     if(a==='approve'&&!confirm('Approve this product as Halal? Check the photo and ingredients first.'))return;
     dec.disabled=true;
-    try{await api.decide(b,a);if(current==='reports'){for(const id of (row.dataset.ids||'').split(',').filter(Boolean))await api.resolve(Number(id))}toast('Saved');current==='products'?productRows($('#q').value):show(current)}catch(err){toast('Error: '+err.message);dec.disabled=false}
+    try{await api.decide(b,a);if(current==='added')await api.seen(b);if(current==='reports'){for(const id of (row.dataset.ids||'').split(',').filter(Boolean))await api.resolve(Number(id))}toast('Saved');current==='products'?productRows($('#q').value):show(current)}catch(err){toast('Error: '+err.message);dec.disabled=false}
     return}
   const ep=e.target.closest('[data-editp]');
   if(ep){
