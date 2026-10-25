@@ -335,10 +335,13 @@ const views={
     return `<div class="grid">${cards.join('')}</div><p class="sub" style="margin-top:14px"><b>Approve</b> shows Halal with "Confirmed by Halal Check UK". <b>Keep Haram</b> clears the reports. Check the photo and ingredients first.</p>`;
   },
   async added(){
-    const list=await api.added();
-    const n=list.filter(x=>x.is_new).length;$('#bAdded').textContent=n;
-    if(!list.length)return '<div class="card empty">Nothing has been added by users yet.</div>';
-    const head=`<div class="search" style="justify-content:space-between;align-items:center"><span class="sub">${num(n)} new · ${num(list.length)} shown (latest 200)</span>${n?'<button class="btn ghost sm" data-seenall>Mark all as seen</button>':''}</div>`;
+    const all=await api.added();
+    const n=all.filter(x=>x.is_new).length;$('#bAdded').textContent=n;
+    if(!all.length)return '<div class="card empty">Nothing has been added by users yet.</div>';
+    const list=addedAll?all:all.filter(x=>x.is_new);
+    const tog=`<button class="btn ghost sm" data-togseen>${addedAll?'Hide seen products':'Show seen products ('+num(all.length-n)+')'}</button>`;
+    if(!list.length)return `<div class="search" style="justify-content:space-between;align-items:center"><span class="sub">Nothing new 🎉</span>${tog}</div><div class="card empty">All user-added products have been seen.</div>`;
+    const head=`<div class="search" style="justify-content:space-between;align-items:center"><span class="sub">${num(n)} new · ${num(list.length)} shown (latest 200)</span><span style="display:flex;gap:8px">${n?'<button class="btn ghost sm" data-seenall>Mark all as seen</button>':''}${tog}</span></div>`;
     return head+`<div class="grid">${list.map(p=>`<div class="card" data-b="${esc(p.barcode)}">
       <h3><b class="nm" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}" title="Click to edit the name and brand">${esc(p.name||'Unnamed product')}</b> ${p.is_new?'<span class="pill" style="background:#F5A524;color:#fff">NEW</span>':''}</h3>
       <div class="meta" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:13px;color:var(--muted)"><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span><span>${esc(p.brand||'No brand')}</span><span>· ${esc(p.barcode)}</span><span>· added ${ago(p.created_at)}</span></div>
@@ -408,6 +411,7 @@ const views={
 const meta={overview:['Overview','How the app and the database are doing'],added:['Added by users','Products saved by app users, newest first'],review:['Review queue','Products waiting for your decision'],reports:['Reports','Wrong-result reports from shoppers'],products:['Products','Find a product and change its verdict'],insights:['Insights','How the catalogue and the community are growing'],activity:['Activity','The latest things shoppers did']};
 function setBadges(o){api.addedCount().then(n=>$('#bAdded').textContent=n).catch(()=>{});$('#bReview').textContent=o.waiting_review;$('#bReports').textContent=o.reports_open}
 
+let addedAll=false;
 const pf={q:'',store:'',cat:'',verdict:'',offset:0,limit:40,f:null,total:0};
 function readFilters(){pf.q=($('#q')||{}).value||'';pf.store=($('#fs')||{}).value||'';pf.cat=($('#fc')||{}).value||'';pf.verdict=($('#fv')||{}).value||''}
 async function productRows(){
@@ -453,6 +457,7 @@ document.addEventListener('click',async e=>{
     const r=await askEdit('Rename product',[{label:'Product name',value:oldName,required:true},{label:'Brand (optional)',value:oldBrand}]);if(!r)return;const [n,br]=r;
     try{await api.edit(b,n,br);toast('Saved');productRows()}catch(err){toast('Error: '+err.message)}
     return}
+  if(e.target.closest('[data-togseen]')){addedAll=!addedAll;show('added');return}
   if(e.target.closest('[data-seenall]')){try{await api.seen(null);toast('All marked as seen');show('added')}catch(err){toast('Error: '+err.message)}return}
   const sn=e.target.closest('[data-seen]');
   if(sn){const b=sn.closest('[data-b]').dataset.b;try{await api.seen(b);show('added')}catch(err){toast('Error: '+err.message)}return}
