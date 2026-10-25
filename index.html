@@ -1,512 +1,336 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>Admin · Halal Check UK</title>
-<link rel="icon" href="../favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Halal Check UK – check what's in your food</title>
+<meta name="description" content="Scan a barcode or photograph the ingredients. Halal Check UK tells you if a food looks halal, and which ingredient caused the answer. Free, no ads, no account.">
+<meta name="theme-color" content="#ffffff">
+<link rel="canonical" href="https://halalcheckuk.github.io/privacy/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Halal Check UK">
+<meta name="keywords" content="halal checker UK, halal scanner app, is it halal, halal ingredients, halal supermarket, halal barcode scanner">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Halal Check UK">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="Halal Check UK – check what's in your food">
+<meta property="og:description" content="Scan a barcode or photograph the ingredients. See if a food looks halal and which ingredient decided it. Free, no ads, no account.">
+<meta property="og:url" content="https://halalcheckuk.github.io/privacy/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Halal Check UK – check what's in your food">
+<meta name="twitter:description" content="Scan a barcode or photograph the ingredients. See if a food looks halal and which ingredient decided it.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "MobileApplication", "name": "Halal Check UK", "operatingSystem": "Android", "applicationCategory": "LifestyleApplication", "description": "Scan a barcode or photograph the ingredients. Halal Check UK tells you if a food looks halal, and which ingredient decided it.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "GBP"}, "inLanguage": "en-GB", "publisher": {"@type": "Organization", "name": "Halal Check UK", "url": "https://halalcheckuk.github.io/privacy/", "logo": "https://halalcheckuk.github.io/privacy/favicon.png", "email": "halalcheckuk@gmail.com"}, "url": "https://halalcheckuk.github.io/privacy/"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is Halal Check UK free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The app is free, has no ads and needs no account."}}, {"@type": "Question", "name": "How does Halal Check UK decide if a food is halal?", "acceptedAnswer": {"@type": "Answer", "text": "It reads the ingredients list, from a barcode lookup or a photo of the label, and checks every ingredient against its own list of halal, doubtful and haram ingredients. The result shows which ingredient decided the answer."}}, {"@type": "Question", "name": "Does a halal certificate change the result?", "acceptedAnswer": {"@type": "Answer", "text": "A halal certificate can clear ingredients whose source is unclear, such as gelatine or E471. Pork, blood and alcohol stay haram even with a certificate."}}, {"@type": "Question", "name": "Is Halal Check UK a religious ruling?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is a guide, not a fatwa or a halal certificate. For a ruling, ask a qualified scholar. If you have an allergy, always read the label yourself."}}, {"@type": "Question", "name": "Which phones does it work on?", "acceptedAnswer": {"@type": "Answer", "text": "Android first, with a small test group before the public launch on Google Play. iPhone is planned next."}}]}</script>
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
-:root{--green:#25A062;--forest:#0E3B2A;--mint:#E3F5EC;--bg:#F6FBF8;--card:#fff;--line:#E0EDE5;--text:#10261c;--muted:#6b7f74;
---amber:#B87000;--amber-bg:#FCF1DC;--red:#C62E32;--red-bg:#FBEAEA;--ok-bg:#E3F5EC}
-*{box-sizing:border-box}
-body{margin:0;font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.45}
-button{font:inherit;cursor:pointer}
-.hidden{display:none!important}
-/* login */
-.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.login form{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px;width:100%;max-width:380px;box-shadow:0 10px 30px rgba(14,59,42,.08)}
-.login img{width:56px;height:56px;border-radius:14px}
-.login h1{font-size:22px;margin:14px 0 4px}.login p{margin:0 0 20px;color:var(--muted);font-size:14px}
-label{display:block;font-weight:700;font-size:13px;margin:12px 0 6px}
-input[type=email],input[type=password],input[type=search]{width:100%;height:46px;border:1px solid var(--line);border-radius:12px;padding:0 14px;font:inherit;background:#fff}
-.btn{height:44px;padding:0 18px;border-radius:999px;border:0;background:var(--green);color:#fff;font-weight:700}
-.btn.full{width:100%;margin-top:18px;height:48px}
-.btn.ghost{background:#fff;color:var(--forest);border:1px solid var(--line)}
-.btn.red{background:var(--red)}.btn.amber{background:var(--amber)}
-.btn.sm{height:36px;padding:0 14px;font-size:13px}
-.err{color:var(--red);font-size:13px;margin-top:10px;min-height:18px}
-/* layout */
-.app{display:flex;min-height:100vh}
-.side{width:240px;background:var(--forest);color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
-.brand{display:flex;gap:10px;align-items:center;padding:0 8px 22px;font-weight:800}
-.brand img{width:34px;height:34px;border-radius:9px}
-.nav button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:8px;background:none;border:0;color:#cfe6da;padding:11px 12px;border-radius:12px;font-weight:600;text-align:left}
-.nav button:hover{background:rgba(255,255,255,.08)}
-.nav button.on{background:var(--green);color:#fff}
-.badge{background:#fff;color:var(--forest);border-radius:999px;font-size:12px;font-weight:800;padding:1px 8px;min-width:22px;text-align:center}
-.badge.warn{background:var(--amber-solid,#F5A524)}
-.side .foot{margin-top:auto;font-size:12.5px;color:#9cc1af;padding:0 8px}
-.side .foot button{background:none;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:999px;padding:7px 14px;margin-top:8px}
-main{flex:1;padding:28px 32px;max-width:1200px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;flex-wrap:wrap}
-h2{margin:0;font-size:26px;letter-spacing:-.4px}.sub{color:var(--muted);font-size:14px;margin-top:2px}
-.demo{background:var(--amber-bg);color:var(--amber);border-radius:999px;padding:5px 12px;font-weight:800;font-size:12px}
-/* cards */
-.grid{display:grid;gap:14px}.kpis{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
-.kpi .l{font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
-.kpi .n{font-size:34px;font-weight:800;letter-spacing:-1px;margin-top:4px}
-.kpi .d{font-size:13px;color:var(--muted)}
-.kpi.alert{border-color:#F3D08A;background:#FFFAF0}
-.two{grid-template-columns:repeat(auto-fit,minmax(340px,1fr));margin-top:14px}
-.card h3{margin:0 0 12px;font-size:16px}
-.split{display:flex;height:14px;border-radius:99px;overflow:hidden;background:var(--line)}
-.split i{display:block}
-.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--muted)}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
-.bars{display:flex;align-items:flex-end;gap:6px;height:130px}
-.bars div{flex:1;background:var(--green);border-radius:6px 6px 2px 2px;min-height:3px;position:relative}
-.bars div:hover::after{content:attr(data-t);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--forest);color:#fff;font-size:11px;padding:3px 7px;border-radius:6px;white-space:nowrap;margin-bottom:4px}
-.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:6px}
-.list .row{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line)}
-.list .row:first-child{border-top:0}
-.list .t{font-weight:700}.list .s{font-size:13px;color:var(--muted)}
-.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:800}
-.pill.halal{background:var(--ok-bg);color:#17734a}.pill.doubtful{background:var(--amber-bg);color:var(--amber)}.pill.haram{background:var(--red-bg);color:var(--red)}
-.pill.ver{background:var(--forest);color:#fff}
-/* review */
-.rv{display:grid;grid-template-columns:150px 1fr;gap:18px}
-.photos{display:flex;flex-direction:column;gap:8px}
-.photos img{width:150px;height:110px;object-fit:cover;border-radius:12px;border:1px solid var(--line);cursor:zoom-in;background:var(--mint)}
-.noimg{width:150px;height:110px;border-radius:12px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12.5px;text-align:center;padding:8px}
-.rv h3{margin:0 0 4px}.rv .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:13px;color:var(--muted)}
-.ing{background:var(--bg);border-radius:12px;padding:10px 12px;font-size:13.5px;max-height:96px;overflow:auto}
-.notes{font-size:13px;color:var(--muted);margin-top:8px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.empty{text-align:center;color:var(--muted);padding:40px 10px}
-table{width:100%;border-collapse:collapse}th{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);text-align:left;padding:8px 10px}
-td{padding:11px 10px;border-top:1px solid var(--line);vertical-align:middle}
-.search{display:flex;gap:10px;margin-bottom:14px}.search input{max-width:420px}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--forest);color:#fff;padding:11px 18px;border-radius:999px;font-weight:700;z-index:9}
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:10;padding:20px}
-.lightbox img{max-width:100%;max-height:100%;border-radius:12px}
-@media(max-width:820px){.app{flex-direction:column}.side{width:100%;height:auto;position:static;padding:12px}.nav{display:flex;gap:6px;overflow-x:auto}.nav button{white-space:nowrap;width:auto}.side .foot{display:none}.brand{padding-bottom:10px}main{padding:18px 16px}.rv{grid-template-columns:1fr}.photos{flex-direction:row}}
-.nm{cursor:pointer;border-bottom:1px dashed var(--muted)}.nm:hover{color:var(--forest)}.nm::after{content:' \270E';font-size:.8em;color:var(--muted)}
-.fbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.fbar input,.fbar select{height:44px;border-radius:12px;border:1px solid var(--line);padding:0 12px;background:#fff;font:inherit;min-width:150px}.fbar input{flex:1;min-width:220px;max-width:360px}
-.pg{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:14px;color:var(--muted);font-size:13.5px}
-.chip{display:inline-flex;align-items:center;gap:6px;background:var(--mint);color:var(--forest);border-radius:999px;padding:3px 6px 3px 10px;font-size:12.5px;font-weight:700;margin:2px 4px 2px 0}.chip a{cursor:pointer;color:var(--muted);font-weight:800;padding:0 4px}.chip a:hover{color:var(--red)}
-.pimg{width:46px;height:46px;object-fit:contain;border-radius:8px;border:1px solid var(--line);background:#fff;flex:none}.pimg.none{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px}
-select.addshop{height:30px;border-radius:999px;border:1px dashed var(--muted);background:#fff;color:var(--forest);font-size:12.5px;font-weight:700;padding:0 8px}
-.nosh{color:var(--amber);font-size:12.5px;font-weight:700;margin-right:6px}
+/* Layout: a deep forest backdrop with slow green light behind frosted glass panels. One deliberate dark look.
+   Light comes from three places only: the drifting aurora, a pointer spotlight on glass cards, and verdict glows. */
+:root {
+  --forest: #ffffff;
+  --forest-2: #f3fcf7;
+  --ink: #0f2a1d;
+  --muted: #4a6458;
+  --green: #2fbf78;
+  --green-deep: #25a062;
+  --mint: #0f6b3e;
+  --amber: #f5a524;
+  --red: #ef5a5f;
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-strong: rgba(255, 255, 255, 0.95);
+  --edge: rgba(15, 90, 55, 0.13);
+  --edge-top: rgba(255, 255, 255, 1);
+  --font: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--forest); color: var(--ink); font-family: var(--font); font-size: 17px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--mint); }
+:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; border-radius: 12px; }
+.wrap { max-width: 1120px; margin: 0 auto; }
 
-/* ── Modern look (overrides the basics above) ───────────────────────────── */
-:root{--bg:#F2F6F4;--line:#E7EFEA;--shadow:0 1px 2px rgba(14,59,42,.04),0 8px 24px rgba(14,59,42,.06);--shadow-lg:0 2px 4px rgba(14,59,42,.05),0 18px 40px rgba(14,59,42,.10)}
-body{background:radial-gradient(1100px 520px at 85% -10%,#DDF3E7 0%,rgba(221,243,231,0) 60%),var(--bg);-webkit-font-smoothing:antialiased}
-.app{padding:14px;gap:18px}
-.side{height:calc(100vh - 28px);top:14px;width:248px;border-radius:26px;padding:22px 14px;background:linear-gradient(165deg,#0F4A34 0%,#0B3324 55%,#082A1E 100%);box-shadow:var(--shadow-lg)}
-.brand{padding:2px 10px 24px;font-size:15px;letter-spacing:-.2px}.brand img{width:38px;height:38px;border-radius:11px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
-.nav{display:flex;flex-direction:column;gap:3px}
-.nav button{gap:11px;justify-content:flex-start;padding:11px 12px;border-radius:14px;color:#BFDCCD;font-size:14.5px;transition:background .15s,color .15s,transform .15s}
-.nav button svg{width:19px;height:19px;flex:none;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
-.nav button .badge{margin-left:auto}
-.nav button:hover{background:rgba(255,255,255,.09);color:#fff}
-.nav button.on{background:linear-gradient(135deg,#2FB574,#1F9A5F);color:#fff;box-shadow:0 6px 16px rgba(37,160,98,.38)}
-.badge{background:rgba(255,255,255,.95);font-size:11.5px;padding:1px 8px}
-.badge.warn{background:#FFC24B;color:#5a3b00}
-.side .foot{padding:12px 10px 0;border-top:1px solid rgba(255,255,255,.1)}
-.side .foot button{border-radius:12px;width:100%;padding:9px 14px;transition:background .15s}.side .foot button:hover{background:rgba(255,255,255,.1)}
-main{padding:18px 20px 40px 4px;max-width:1240px}
-.top{margin-bottom:24px}
-h2{font-size:30px;letter-spacing:-.8px;font-weight:800}.sub{font-size:14.5px}
-.card{border:1px solid rgba(231,239,234,.9);border-radius:22px;padding:20px;box-shadow:var(--shadow);transition:box-shadow .2s,transform .2s}
-.kpi{position:relative;overflow:hidden}.kpi::after{content:"";position:absolute;right:-26px;top:-26px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(37,160,98,.16),rgba(37,160,98,0) 70%)}
-.kpi:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
-.kpi .l{font-size:11.5px;letter-spacing:.8px}.kpi .n{font-size:38px;letter-spacing:-1.5px;font-weight:800}
-.kpi.alert{background:linear-gradient(180deg,#FFFBF1,#FFF6E3);border-color:#F5DCA4}.kpi.alert::after{background:radial-gradient(circle,rgba(245,165,36,.22),rgba(245,165,36,0) 70%)}
-.card h3{font-size:16.5px;letter-spacing:-.2px}
-.split{height:12px}.bars div{background:linear-gradient(180deg,#34C27F,#1F9A5F)}
-.btn{box-shadow:0 2px 6px rgba(37,160,98,.28);transition:transform .12s,box-shadow .15s,filter .15s;font-weight:700}
-.btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(37,160,98,.32);filter:brightness(1.03)}.btn:active{transform:translateY(0)}
-.btn.red{box-shadow:0 2px 6px rgba(198,46,50,.28)}.btn.red:hover{box-shadow:0 6px 14px rgba(198,46,50,.32)}
-.btn.amber{box-shadow:0 2px 6px rgba(184,112,0,.28)}.btn.amber:hover{box-shadow:0 6px 14px rgba(184,112,0,.32)}
-.btn.ghost{box-shadow:none;background:#fff}.btn.ghost:hover{box-shadow:var(--shadow);background:#fff}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-input[type=email],input[type=password],input[type=search],.fbar input,.fbar select{border-radius:14px;border-color:var(--line);transition:border-color .15s,box-shadow .15s}
-input:focus,select:focus{outline:0;border-color:#2FB574!important;box-shadow:0 0 0 4px rgba(47,181,116,.16)}
-.fbar{background:#fff;padding:12px;border-radius:20px;box-shadow:var(--shadow);border:1px solid var(--line)}
-.pill{padding:3px 11px;font-size:11.5px;letter-spacing:.2px}
-.pill.ver{background:linear-gradient(135deg,#145A3D,#0E3B2A)}
-table{border-collapse:separate;border-spacing:0}th{background:#F7FAF8;font-size:11.5px;padding:10px 12px}th:first-child{border-radius:12px 0 0 12px}th:last-child{border-radius:0 12px 12px 0}
-td{padding:13px 12px;border-top:1px solid var(--line)}tr:first-child td{border-top:0}
-tbody tr,table tr[data-b]{transition:background .12s}table tr[data-b]:hover{background:#F8FCFA}
-.rv{gap:20px}.photos img,.noimg{border-radius:16px}.ing{border-radius:14px;background:#F6FAF8}
-.list .row{padding:12px 0}
-.chip{background:#E5F6ED}.pimg{border-radius:12px;width:50px;height:50px}
-.empty{padding:56px 10px}
-.toast{border-radius:16px;box-shadow:var(--shadow-lg);padding:12px 20px}
-.login{background:radial-gradient(900px 500px at 50% -10%,#CDEFDD,rgba(205,239,221,0) 60%),var(--bg)}
-.login form{border-radius:26px;box-shadow:var(--shadow-lg);border:1px solid var(--line)}
-@media(max-width:820px){.app{padding:10px;gap:10px}.side{height:auto;position:static;width:100%;border-radius:20px;padding:12px}.nav{flex-direction:row;overflow-x:auto}.nav button{white-space:nowrap;width:auto}.brand{padding-bottom:10px}.side .foot{display:none}main{padding:6px 2px 30px}h2{font-size:24px}.rv{grid-template-columns:1fr}}
-.hb{display:grid;grid-template-columns:minmax(110px,170px) 1fr 56px;gap:12px;align-items:center;margin:9px 0;font-size:13.5px}.hb .nmx{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hb .track{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--line)}.hb .track i{display:block;height:100%}.hb .v{text-align:right;color:var(--muted);font-weight:700}
-.prog{height:14px;border-radius:99px;background:var(--line);overflow:hidden;margin:12px 0 6px}.prog i{display:block;height:100%;background:linear-gradient(90deg,#34C27F,#1F9A5F);border-radius:99px}
-.ins{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}.ins .wide{grid-column:1/-1}
-.mini .row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}.mini .row:first-child{border-top:0}.mini .row b{font-weight:700}.mini .row .s{color:var(--muted);font-size:12.5px}
-@media(max-width:520px){.ins{grid-template-columns:1fr}.hb{grid-template-columns:90px 1fr 44px}}
-.dlg-back{position:fixed;inset:0;background:rgba(8,42,30,.45);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:18px;z-index:20;animation:fade .15s}
-.dlg{background:#fff;border-radius:24px;box-shadow:0 30px 80px rgba(8,42,30,.35);width:100%;max-width:440px;padding:26px;animation:pop .18s}
-.dlg h3{margin:0 0 6px;font-size:20px;letter-spacing:-.4px}.dlg p{margin:0 0 14px;color:var(--muted);font-size:14.5px;white-space:pre-line}
-.dlg label{margin:12px 0 6px}.dlg input[type=text]{width:100%;height:46px;border:1px solid var(--line);border-radius:14px;padding:0 14px;font:inherit}
-.dlg .err{min-height:16px;margin-top:6px}
-.dlg .acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
-@keyframes fade{from{opacity:0}to{opacity:1}}@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+/* aurora: three blurred lights that drift slowly */
+.aurora { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: radial-gradient(1200px 600px at 50% -10%, #e9f9f0, #ffffff 70%); }
+.aurora i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .32; will-change: transform; }
+.aurora i:nth-child(1) { width: 520px; height: 520px; background: #5fdc9c; left: -140px; top: 60px; animation: drift1 26s ease-in-out infinite alternate; }
+.aurora i:nth-child(2) { width: 460px; height: 460px; background: #6fd8c6; right: -120px; top: 280px; animation: drift2 32s ease-in-out infinite alternate; }
+.aurora i:nth-child(3) { width: 380px; height: 380px; background:#a8ecc8;left:38%; bottom: -160px; opacity: .32; animation: drift3 38s ease-in-out infinite alternate; }
+@keyframes drift1 { to { transform: translate(180px, 120px) scale(1.15); } }
+@keyframes drift2 { to { transform: translate(-200px, -80px) scale(1.2); } }
+@keyframes drift3 { to { transform: translate(-260px, -60px) scale(1.1); } }
+.grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .05; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* glass: blur, a faint fill, a lit top edge, and a spotlight that follows the pointer */
+.glass {
+  position: relative; border-radius: 28px; background: linear-gradient(160deg, var(--glass-strong), var(--glass));
+  border: 1px solid var(--edge); box-shadow: inset 0 1px 0 var(--edge-top), 0 18px 44px -22px rgba(15,100,60,.28), 0 2px 6px rgba(15,100,60,.06);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5); backdrop-filter: blur(22px) saturate(1.5); overflow: hidden;
+}
+.glass::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 0%), rgba(47,191,120,.13), transparent 60%);
+}
+.glass:hover::before { opacity: 1; }
+
+/* header */
+header.top { position: sticky; top: max(12px, env(safe-area-inset-top, 0px)); z-index: 30; padding-top: 12px; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; height: 60px; padding: 0 12px 0 16px; border-radius: 999px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; text-decoration: none; color: var(--ink); letter-spacing: -.01em; white-space: nowrap; }
+.mark { width: 34px; height: 34px; border-radius: 11px; background: linear-gradient(145deg, #3fd48a, #1d8f58); display: grid; place-items: center; box-shadow: 0 6px 18px -4px rgba(47,191,120,.7), inset 0 1px 0 rgba(255,255,255,.5); }
+.mark svg { width: 20px; height: 20px; }
+nav.menu { display: flex; align-items: center; gap: 24px; }
+nav.menu a { font-weight: 600; font-size: .95rem; text-decoration: none; color: var(--muted); }
+nav.menu a:hover { color: var(--ink); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 26px; border-radius: 999px; border: 0; font: 800 1rem var(--font); text-decoration: none; cursor: pointer; color: #04170e; background: linear-gradient(180deg, #5fe2a0, #2fbf78); box-shadow: 0 10px 30px -8px rgba(47,191,120,.8), inset 0 1px 0 rgba(255,255,255,.6); transition: transform .2s, box-shadow .2s; position: relative; overflow: hidden; }
+.btn::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); transform: skewX(-18deg); animation: sheen 5s ease-in-out infinite; }
+@keyframes sheen { 0%, 60% { left: -60%; } 100% { left: 130%; } }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -8px rgba(47,191,120,.95), inset 0 1px 0 rgba(255,255,255,.6); }
+.btn.small { padding: 10px 18px; font-size: .92rem; }
+.btn.ghost { color: var(--ink); background: var(--glass-strong); border: 1px solid var(--edge); box-shadow: inset 0 1px 0 var(--edge-top); }
+.btn.ghost::after { display: none; }
+
+/* hero */
+.hero { padding-block: 72px 96px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; }
+.pill { display: inline-flex; align-items: center; gap: 10px; padding: 7px 16px 7px 12px; border-radius: 999px; font-weight: 700; font-size: .9rem; color: var(--mint); margin-bottom: 22px; }
+.pill i { width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(47,191,120,.25), 0 0 14px 2px var(--green); animation: pulse 2.4s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(47,191,120,.1), 0 0 22px 4px var(--green); } }
+h1 { font-size: clamp(2.5rem, 6.4vw, 4.6rem); line-height: 1.02; letter-spacing: -.035em; font-weight: 800; margin: 0 0 22px; max-width: 13ch; text-wrap: balance; background: linear-gradient(180deg, #0f2a1d 35%, #1d8f58); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lead { font-size: 1.22rem; color: var(--muted); max-width: 38ch; margin: 0 0 32px; }
+.cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.soon { font-weight: 700; color: var(--muted); font-size: .95rem; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 32px 0 0; padding: 0; list-style: none; font-weight: 700; font-size: .95rem; }
+.facts li::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); vertical-align: 1px; }
+
+/* the phone, drawn in glass */
+.stage { position: relative; display: flex; justify-content: center; padding: 20px 0; }
+.stage::before { content: ""; position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(47,191,120,.55), transparent 65%); filter: blur(30px); top: 14%; }
+.phone { position: relative; width: 292px; border-radius: 46px; padding: 10px; background: linear-gradient(160deg, rgba(255,255,255,.9), rgba(255,255,255,.4)); border: 1px solid var(--edge); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 50px 90px -30px rgba(15,100,60,.55); transform: rotate(3deg); animation: rise 1s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(24px) rotate(3deg); } }
+.screen { --ink:#eaf6ef; --muted:#a6c4b4; --edge: rgba(255,255,255,.16); --edge-top: rgba(255,255,255,.34); color:#eaf6ef; border-radius: 36px; background: linear-gradient(180deg, #0c3a27, #082a1c); overflow: hidden; min-height: 540px; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; }
+.notch { width: 92px; height: 20px; background: #03100a; border-radius: 12px; margin: 0 auto 6px; }
+.screen h3 { margin: 6px 0 4px; font-size: 1.5rem; line-height: 1.12; letter-spacing: -.02em; }
+.sbtn { display: flex; align-items: center; gap: 10px; padding: 13px; border-radius: 18px; font-weight: 800; }
+.sbtn small { display: block; font-weight: 500; opacity: .75; font-size: .75rem; }
+.sbtn.a { background: linear-gradient(180deg, #38c983, #25a062); color: #03170d; box-shadow: 0 10px 24px -10px rgba(47,191,120,.9); }
+.sbtn.b { background: rgba(255,255,255,.08); border: 1px solid var(--edge); box-shadow: inset 0 1px 0 var(--edge-top); }
+.ico { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.18); flex: none; }
+.ico svg { width: 22px; height: 22px; }
+.lbl { font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 8px 0 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { padding: 6px 12px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: rgba(255,255,255,.08); border: 1px solid var(--edge); }
+.row { display: flex; align-items: center; gap: 10px; padding: 9px 10px 9px 14px; border-radius: 16px; background: rgba(255,255,255,.07); border: 1px solid var(--edge); position: relative; overflow: hidden; font-size: .85rem; font-weight: 700; }
+.row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--c); box-shadow: 0 0 14px var(--c); }
+.row span { flex: 1; }
+.row em { font-style: normal; font-size: .7rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; color: #04170e; background: var(--c); }
+.row.g { --c: var(--green); } .row.d { --c: var(--amber); }
+.float { white-space: nowrap; position: absolute; display: flex; align-items: center; gap: 10px; padding: 11px 16px 11px 11px; border-radius: 18px; font-weight: 800; font-size: .92rem; animation: bob 6s ease-in-out infinite; }
+.float i { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-style: normal; color: #04170e; background: var(--c); box-shadow: 0 0 20px 2px var(--c); }
+.float.a { --c: var(--green); right: calc(50% + 142px); top: 20%; }
+.float.b { --c: var(--red); right: calc(50% - 190px); bottom: 36%; animation-delay: -3s; }
+.float.c { --c: var(--amber); right: -14px; top: 6%; animation-delay: -1.5s; }
+@keyframes bob { 50% { transform: translateY(-10px); } }
+
+/* sections */
+section { padding-block: 72px; }
+.head { max-width: 640px; margin-bottom: 36px; }
+h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 12px; font-weight: 800; text-wrap: balance; }
+.intro { color: var(--muted); margin: 0; font-size: 1.1rem; }
+.bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+.card { padding: 26px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card h3 { margin: 4px 0 0; font-size: 1.2rem; letter-spacing: -.01em; }
+.card p { margin: 0; color: var(--muted); font-size: .98rem; }
+.glyph { width: 46px; height: 46px; border-radius: 15px; display: grid; place-items: center; background: linear-gradient(145deg, rgba(95,226,160,.35), rgba(47,191,120,.12)); border: 1px solid var(--edge); box-shadow: inset 0 1px 0 var(--edge-top), 0 8px 24px -10px var(--green); }
+.glyph svg { width: 24px; height: 24px; }
+.c1 { grid-column: span 2; } .c2 { grid-column: span 4; } .c3, .c4, .c5 { grid-column: span 2; } .c6 { grid-column: span 6; flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.c6 .txt { flex: 1 1 320px; min-width: 0; }
+
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.ans { padding: 28px; display: flex; flex-direction: column; gap: 14px; --c: var(--green); }
+.ans::after { content: ""; position: absolute; width: 220px; height: 220px; right: -90px; top: -90px; border-radius: 50%; background: radial-gradient(circle, var(--c), transparent 70%); opacity: .35; pointer-events: none; }
+.ans.d { --c: var(--amber); } .ans.r { --c: var(--red); }
+.tag { align-self: flex-start; font-weight: 800; padding: 7px 18px; border-radius: 999px; color: #04170e; background: var(--c); box-shadow: 0 0 24px -2px var(--c); }
+.ans p { margin: 0; color: var(--muted); }
+.guide { margin: 22px 0 0; color: var(--muted); font-size: .95rem; max-width: 70ch; }
+
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0; margin: 0; list-style: none; counter-reset: s; }
+.steps li { padding: 26px; counter-increment: s; }
+.steps li::before { content: counter(s); display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; font-weight: 800; color: #04170e; background: linear-gradient(180deg, #5fe2a0, #2fbf78); box-shadow: 0 0 22px -2px var(--green); margin-bottom: 14px; }
+.steps h3 { margin: 0 0 6px; font-size: 1.15rem; } .steps p { margin: 0; color: var(--muted); }
+.twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.box { padding: 28px; } .box h3 { margin: 0 0 10px; font-size: 1.2rem; } .box p { margin: 0 0 10px; color: var(--muted); font-size: .98rem; }
+.band { padding: clamp(28px, 5vw, 56px); text-align: left; display: grid; gap: 14px; justify-items: start; background: linear-gradient(135deg, rgba(47,191,120,.28), rgba(255,255,255,.06)); }
+.band h2 { margin: 0; } .band p { margin: 0; color: var(--muted); max-width: 56ch; }
+footer { padding-block: 40px 56px; color: var(--muted); font-size: .9rem; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-top: 1px solid var(--edge); padding-top: 24px; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding-block: 48px 64px; }
+  .stage { order: -1; }
+  nav.menu a:not(.btn) { display: none; }
+  .bento, .trio, .steps, .twocol { grid-template-columns: 1fr; }
+  .c1, .c2, .c3, .c4, .c5, .c6 { grid-column: auto; }
+  .float.a { left: 0; right: auto; } .float.b { right: 0; } .float.c { right: 0; top: 2%; }
+}
+@media (prefers-reduced-motion: reduce) { .aurora i, .btn::after, .float, .pill i, .phone { animation: none; } }
+details.box summary{cursor:pointer;list-style:none}details.box summary::-webkit-details-marker{display:none}details.box summary h3{margin:0;display:inline}details.box summary::after{content:"+";float:right;font-weight:800;color:var(--mint)}details.box[open] summary::after{content:"–"}details.box p{margin:12px 0 0}a.ans h3{margin:0}
 </style>
 </head>
 <body>
 
-<div id="login" class="login hidden">
-  <form id="loginForm">
-    <img src="../logo.png" alt="">
-    <h1>Halal Check UK admin</h1>
-    <p>Sign in to review products and see how the app is doing.</p>
-    <label for="em">Email</label><input id="em" type="email" autocomplete="username" required>
-    <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required>
-    <button class="btn full" type="submit">Sign in</button>
-    <div class="err" id="loginErr"></div>
-  </form>
-</div>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="grain" aria-hidden="true"></div>
 
-<div id="app" class="app hidden">
-  <aside class="side">
-    <div class="brand"><img src="../logo.png" alt=""><span>Halal Check UK<br><small style="font-weight:600;color:#9cc1af">Admin</small></span></div>
-    <nav class="nav" id="nav">
-      <button data-v="overview" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>Overview</button>
-      <button data-v="review"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.8 2.8L16.5 9.5"/></svg>Review queue <span class="badge warn" id="bReview">0</span></button>
-      <button data-v="added"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.6"/><path d="M2.8 20c.6-3.4 3.2-5.4 6.2-5.4S14.6 16.6 15.2 20"/><path d="M19 8v6M16 11h6"/></svg>Added by users <span class="badge warn" id="bAdded">0</span></button>
-      <button data-v="reports"><svg viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>Reports <span class="badge" id="bReports">0</span></button>
-      <button data-v="products"><svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg>Products</button>
-      <button data-v="insights"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Insights</button>
-      <button data-v="activity"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Activity</button>
-    </nav>
-    <div class="foot"><div id="who"></div><button id="out">Sign out</button></div>
-  </aside>
-  <main>
-    <div class="top"><div><h2 id="title">Overview</h2><div class="sub" id="subtitle"></div></div><span class="demo hidden" id="demoTag">DEMO DATA</span></div>
-    <div id="view"></div>
-  </main>
-</div>
-<div id="toast" class="toast hidden"></div>
+<div class="wrap">
+  <header class="top">
+    <div class="bar glass">
+      <a class="brand" href="#top"><span class="mark"><img src="favicon.png" alt="" width="34" height="34" style="border-radius:11px;display:block"></span>Halal Check UK</a>
+      <nav class="menu" aria-label="Main">
+        <a href="#features">Features</a><a href="#answers">The answers</a><a href="#how">How it works</a><a href="privacy.html">Privacy</a>
+        <a class="btn small" href="#join">Join the test</a>
+      </nav>
+    </div>
+  </header>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script>
-/* ── Settings ── the key below is the public (publishable) key, the same one the app uses. */
-const SUPABASE_URL='https://tularxaodnylofjuvicg.supabase.co';
-const SUPABASE_KEY='sb_publishable_e2D5gFY2178kuXsrjPaZiA_gaELYzEh';
-const BUCKET='halal-label-photos';
-const DEMO=new URLSearchParams(location.search).has('demo');
-
-const $=s=>document.querySelector(s);
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const when=d=>{if(!d)return'';const t=new Date(d);return t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+', '+t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})};
-const ago=d=>{const s=(Date.now()-new Date(d))/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';return Math.floor(s/86400)+' d ago'};
-const num=n=>Number(n||0).toLocaleString('en-GB');
-/* Pop-up dialogs in the same style as the page (instead of the browser's plain boxes). */
-function dialog({title,text='',fields=[],ok='OK',danger=false,cancel='Cancel'}){
-  return new Promise(resolve=>{
-    const back=document.createElement('div');back.className='dlg-back';
-    back.innerHTML=`<form class="dlg" role="dialog" aria-modal="true"><h3>${esc(title)}</h3>${text?`<p>${esc(text)}</p>`:''}${fields.map((f,i)=>`<label for="dlg${i}">${esc(f.label)}</label><input type="text" id="dlg${i}" value="${esc(f.value||'')}" autocomplete="off">`).join('')}<div class="err"></div><div class="acts"><button type="button" class="btn ghost" data-x>${esc(cancel)}</button><button type="submit" class="btn ${danger?'red':''}">${esc(ok)}</button></div></form>`;
-    const done=v=>{back.remove();document.removeEventListener('keydown',onKey);resolve(v)};
-    const onKey=e=>{if(e.key==='Escape')done(null)};
-    document.addEventListener('keydown',onKey);
-    back.addEventListener('mousedown',e=>{if(e.target===back)done(null)});
-    back.querySelector('[data-x]').onclick=()=>done(null);
-    back.querySelector('form').onsubmit=e=>{
-      e.preventDefault();
-      const vals=fields.map((f,i)=>back.querySelector('#dlg'+i).value.trim());
-      const bad=fields.findIndex((f,i)=>f.required&&!vals[i]);
-      if(bad>=0){back.querySelector('.err').textContent=fields[bad].label+' cannot be empty.';back.querySelector('#dlg'+bad).focus();return}
-      done(fields.length?vals:true)};
-    document.body.append(back);
-    const first=back.querySelector('input');(first||back.querySelector('button[type=submit]')).focus();if(first)first.select();
-  });
-}
-const askConfirm=(title,text,ok,danger)=>dialog({title,text,ok,danger}).then(v=>v===true);
-const askEdit=(title,fields,ok)=>dialog({title,fields,ok:ok||'Save'});
-function toast(t){const e=$('#toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),2600)}
-
-/* ── Data layer: demo data or Supabase ── */
-let sb=null,api;
-if(DEMO){
-  const day=i=>{const d=new Date();d.setDate(d.getDate()-13+i);return d.toISOString().slice(0,10)};
-  const demo={
-    overview:{products:1842,halal:1190,doubtful:402,haram:250,verified:37,waiting_review:6,new_products_7d:64,contributors_1d:18,contributors_7d:73,contributors_30d:141,contributors_all:212,submissions:530,submissions_7d:88,votes:964,halal_claims:9,reports_open:4,reports_7d:11,store_links:2310,
-      devices:{total:212,android:212,ios:0,active_1d:34,active_7d:121,active_30d:190,android_7d:121,ios_7d:0,new_7d:48},
-      daily:Array.from({length:14},(_,i)=>({date:day(i),active_devices:[12,15,14,22,30,26,24,31,38,35,29,40,44,34][i],new_devices:[3,4,2,7,9,5,4,8,9,7,6,11,8,10][i],contributors:[4,6,5,9,12,8,7,11,14,13,10,16,18,15][i],new_products:[3,5,2,8,12,6,4,9,11,10,7,14,9,12][i],reports:[0,1,0,2,1,0,1,2,0,1,3,1,0,2][i]}))},
-    queue:[
-      {last_feedback:new Date(Date.now()-5*3600000).toISOString(),barcode:'5028217001202',name:'Chicken seasoning',brand:'Spice House',verdict:'haram',trust_level:'label_checked',ingredients_text:'Kylling, tørret ingefær 3%, tørret hvitløk 3%, salt, pepper, kanel. Kan inneholde spor av trenøtter, hvete, melk, soya, sennep og sulfitt.',halal_claims:3,agree_count:1,disagree_count:3,notes:['Halal label seen on the pack (customer report). Photo: demo/1.jpg','Halal label seen on the pack (customer report)'],photos:[]},
-      {last_feedback:new Date(Date.now()-10*3600000).toISOString(),barcode:'5012345678900',name:'Beef burgers 4 pack',brand:'Lidl',verdict:'haram',trust_level:'database',ingredients_text:'Beef (92%), rusk (wheat flour), water, salt, spices.',halal_claims:1,agree_count:0,disagree_count:1,notes:['Halal label seen on the pack (customer report)'],photos:[]},
-      {last_feedback:new Date(Date.now()-15*3600000).toISOString(),barcode:'8801234567890',name:'Marshmallows',brand:'Sweet Co',verdict:'doubtful',trust_level:'label_checked',ingredients_text:'Sugar, glucose syrup, gelatine, flavouring.',halal_claims:2,agree_count:2,disagree_count:2,notes:['Halal label seen on the pack (customer report)'],photos:[]}],
-    added:[
-      {barcode:'5060000000011',name:'Chilli noodles',brand:'Demo Foods',verdict:'doubtful',trust_level:'label_checked',ingredients_text:'Noodles, glycerol (E422), flavour enhancers (E635), salt.',created_at:new Date(Date.now()-1800e3).toISOString(),is_new:true},
-      {barcode:'5060000000028',name:'Tomato soup',brand:'',verdict:'halal',trust_level:'label_checked',ingredients_text:'Tomatoes, water, sugar, salt.',created_at:new Date(Date.now()-86400e3).toISOString(),is_new:false}],
-    reports:[
-      {id:1,barcode:'5000000000011',name:'Chocolate cake',brand:'Demo Bakery',image_url:null,ingredients_text:'Sugar, flour, eggs, cocoa, gelatine, flavouring',verdict:'doubtful',note:'Reason: It should be Halal\nNote: Vegetarian label on the box',created_at:new Date(Date.now()-3600e3).toISOString()},
-      {id:2,barcode:'5000000000028',name:'Cheese slices',verdict:'halal',note:'Reason: The ingredients are wrong or out of date',created_at:new Date(Date.now()-9e6).toISOString()},
-      {id:3,barcode:'5000000000035',name:'Ham slices',verdict:'haram',note:'Reason: Something else\nNote: this one is turkey ham',created_at:new Date(Date.now()-86400e3).toISOString()}],
-    products:[
-      {barcode:'5028217001202',name:'Chicken seasoning',brand:'Spice House',verdict:'haram',trust_level:'label_checked',halal_claims:3,agree_count:1,disagree_count:3},
-      {barcode:'5012345678901',name:'Garden peas',brand:'Lidl',verdict:'halal',trust_level:'confirmed',halal_claims:0,agree_count:12,disagree_count:0},
-      {barcode:'5012345678902',name:'Digestive biscuits',brand:'Tesco',verdict:'halal',trust_level:'community',halal_claims:0,agree_count:8,disagree_count:1}],
-    activity:[
-      {kind:'Label checked',barcode:'5028217001202',detail:'haram',at:new Date(Date.now()-600e3).toISOString()},
-      {kind:'Vote disagree',barcode:'5012345678900',detail:'actually_halal_certified',at:new Date(Date.now()-1500e3).toISOString()},
-      {kind:'Shop found',barcode:'5012345678902',detail:'Lidl',at:new Date(Date.now()-3000e3).toISOString()},
-      {kind:'Vote agree',barcode:'5012345678901',detail:'',at:new Date(Date.now()-7200e3).toISOString()}]
-  };
-  api={user:async()=>({email:'halalcheckuk@gmail.com'}),signIn:async()=>{},signOut:async()=>location.reload(),
-    overview:async()=>demo.overview,queue:async()=>demo.queue,added:async()=>demo.added,seen:async b=>{demo.added.forEach(x=>{if(!b||x.barcode===b)x.is_new=false})},addedCount:async()=>demo.added.filter(x=>x.is_new).length,reports:async()=>demo.reports,products:async q=>demo.products.filter(p=>(p.name+p.brand+p.barcode).toLowerCase().includes((q||'').toLowerCase())),
-    filters:async()=>({total:demo.products.length,no_shop:1,stores:['Tesco','Lidl','Aldi'].map(x=>({store:x,count:1})),categories:[{category:'Snacks & sweets',count:1},{category:'Other',count:2}]}),browse:async()=>({total:demo.products.length,items:demo.products.map(x=>({...x,category:'Other',has_ingredients:true,stores:[]}))}),setStore:async()=>{},
-    insights:async()=>({growth:Array.from({length:30},(_,i)=>({date:day(i-16),new_products:[3,5,2,8,12,6,4,9,11,10][i%10],label_photos:[1,0,2,1,3,0,1,2,1,0][i%10]})),by_store:[{name:'Tesco',total:300,halal:200,doubtful:80,haram:20},{name:'Lidl',total:180,halal:120,doubtful:40,haram:20}],no_shop:42,by_category:[{name:'Snacks & sweets',total:400,halal:250,doubtful:120,haram:30},{name:'Dairy',total:220,halal:180,doubtful:30,haram:10}],by_source:[{name:'Open Food Facts',total:900,halal:600,doubtful:250,haram:50},{name:'Label photo from a shopper',total:120,halal:60,doubtful:40,haram:20}],ingredients:{total:1000,missing:120,list:[{barcode:'5000000000011',name:'Lidl teriyaki sauce',brand:'Lidl',verdict:'doubtful',created_at:new Date().toISOString()}]},missing_products:{distinct:2,list:[{barcode:'5022374032789',scan_count:4,last_seen:new Date().toISOString()}]},flagged_words:[{name:'Flavouring',total:210},{name:'Gelatine',total:90}],community:{votes_30d:120,disagree_30d:18,reports_open:3,reports_resolved_30d:11,avg_hours_to_resolve:7.5,most_disputed:[{barcode:'5012345678900',name:'Beef burgers 4 pack',verdict:'haram',agree_count:0,disagree_count:3}]}}),
-    activity:async()=>demo.activity,del:async b=>{demo.products=demo.products.filter(x=>x.barcode!==b)},edit:async(b,n,br)=>{const p=demo.products.find(x=>x.barcode===b);if(p){p.name=n;p.brand=br}},decide:async(b,a)=>{demo.queue=demo.queue.filter(x=>x.barcode!==b)},resolve:async id=>{demo.reports=demo.reports.filter(x=>x.id!==id)},delReport:async id=>{demo.reports=demo.reports.filter(x=>x.id!==id)},photo:async()=>null};
-}else{
-  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
-  const rpc=async(n,a)=>{const{data,error}=await sb.rpc(n,a||{});if(error)throw new Error(error.message);return data};
-  api={
-    user:async()=>{const{data}=await sb.auth.getSession();return data.session?.user||null},
-    signIn:async(e,p)=>{const{error}=await sb.auth.signInWithPassword({email:e,password:p});if(error)throw error},
-    signOut:async()=>{await sb.auth.signOut();location.reload()},
-    overview:()=>rpc('admin_overview'),queue:()=>rpc('admin_review_queue'),added:()=>rpc('admin_user_added'),seen:b=>rpc('admin_mark_seen',{p_barcode:b||null}),addedCount:()=>rpc('admin_user_added_count'),reports:()=>rpc('admin_reports',{p_open_only:true}),
-    products:q=>rpc('admin_products',{p_query:q||''}),filters:()=>rpc('admin_catalogue_filters'),insights:()=>rpc('admin_insights'),browse:a=>rpc('admin_browse_products',a),setStore:(b,st,add)=>rpc('admin_set_product_store',{p_barcode:b,p_store:st,p_add:add}),activity:()=>rpc('admin_recent_activity'),
-    decide:(b,a)=>rpc('admin_decide',{p_barcode:b,p_action:a}),resolve:id=>rpc('admin_resolve_report',{p_id:id}),delReport:id=>rpc('admin_delete_report',{p_id:id}),del:b=>rpc('admin_delete_product',{p_barcode:b}),edit:(b,n,br)=>rpc('admin_update_product',{p_barcode:b,p_name:n,p_brand:br}),
-    photo:async path=>{const{data}=await sb.storage.from(BUCKET).createSignedUrl(path,3600);return data?.signedUrl||null}
-  };
-}
-
-/* ── Views ── */
-const views={
-  async overview(){
-    const o=await api.overview();setBadges(o);
-    const max=k=>Math.max(1,...o.daily.map(d=>d[k]));
-    const bars=k=>`<div class="bars">${o.daily.map(d=>`<div style="height:${Math.max(3,d[k]/max(k)*100)}%" data-t="${esc(d.date.slice(5))}: ${d[k]}"></div>`).join('')}</div><div class="axis"><span>${esc(o.daily[0].date.slice(5))}</span><span>${esc(o.daily.at(-1).date.slice(5))}</span></div>`;
-    const t=Math.max(1,o.halal+o.doubtful+o.haram);const pc=n=>(n/t*100).toFixed(1);
-    const kpi=(l,n,d,cls='')=>`<div class="card kpi ${cls}"><div class="l">${l}</div><div class="n">${num(n)}</div><div class="d">${d}</div></div>`;
-    const act=await api.activity();
-    const dv=o.devices||{total:0,android:0,ios:0,active_1d:0,active_7d:0,active_30d:0,android_7d:0,ios_7d:0,new_7d:0};
-    const dt=Math.max(1,dv.android+dv.ios);
-    const devCard=`<div class="card"><h3>Devices · Android and iOS</h3>
-      <div class="kpis grid" style="grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
-        <div><div class="l" style="font-size:12px;color:var(--muted);font-weight:700">INSTALLS</div><div style="font-size:30px;font-weight:800">${num(dv.total)}</div><div class="s" style="font-size:13px;color:var(--muted)">${num(dv.new_7d)} new in 7 days</div></div>
-        <div><div class="l" style="font-size:12px;color:var(--muted);font-weight:700">ACTIVE TODAY</div><div style="font-size:30px;font-weight:800">${num(dv.active_1d)}</div><div class="s" style="font-size:13px;color:var(--muted)">${num(dv.active_7d)} in 7 days</div></div>
-        <div><div class="l" style="font-size:12px;color:var(--muted);font-weight:700">ACTIVE (30 DAYS)</div><div style="font-size:30px;font-weight:800">${num(dv.active_30d)}</div></div>
+  <main id="top">
+    <div class="hero">
+      <div>
+        <span class="pill glass"><i></i>Built around UK supermarkets</span>
+        <h1>Know what's in it before it's in the basket.</h1>
+        <p class="lead">Scan a barcode or photograph the ingredients. Halal Check UK tells you if the food looks halal, and exactly which ingredient decided it.</p>
+        <div class="cta">
+          <a class="btn" href="#join">Join the test group</a>
+          <span class="soon">Coming soon to Google Play</span>
+        </div>
+        <ul class="facts"><li>No ads</li><li>No account</li><li>Your history stays on your phone</li></ul>
       </div>
-      <div class="split"><i style="width:${(dv.android/dt*100).toFixed(1)}%;background:var(--green)"></i><i style="width:${(dv.ios/dt*100).toFixed(1)}%;background:var(--forest)"></i></div>
-      <div class="legend"><span><span class="dot" style="background:var(--green)"></span>Android ${num(dv.android)} · ${num(dv.android_7d)} active in 7 days</span><span><span class="dot" style="background:var(--forest)"></span>iOS ${num(dv.ios)} · ${num(dv.ios_7d)} active in 7 days</span></div>
-      ${dv.total?'':'<p class="sub" style="margin-top:12px">No devices yet. They appear once phones run the app version that counts installs.</p>'}</div>`;
-    return `<div class="grid kpis">
-      ${kpi('Products',o.products,`${num(o.new_products_7d)} new in 7 days`)}
-      ${kpi('Waiting for review',o.waiting_review,'halal labels and flagged results',o.waiting_review?'alert':'')}
-      ${kpi('Active contributors (7 days)',o.contributors_7d,`${num(o.contributors_1d)} today · ${num(o.contributors_30d)} in 30 days`)}
-      ${kpi('Open reports',o.reports_open,`${num(o.reports_7d)} in the last 7 days`)}
-      ${kpi('Verified halal',o.verified,'confirmed by you or a scholar')}
-      ${kpi('Label checks',o.submissions,`${num(o.submissions_7d)} in 7 days`)}
-      ${kpi('Community votes',o.votes,`${num(o.halal_claims)} halal-label reports`)}
-      ${kpi('Shop links',o.store_links,'products placed in a supermarket')}
+
+      <div class="stage" aria-label="Illustration of the home screen of the app">
+        <div class="phone">
+          <div class="screen">
+            <div class="notch"></div>
+            <h3>What is halal in store?</h3>
+            <div class="sbtn a"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#04170e" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6v12M8 6v12M12 6v12M16 6v12M20 6v12"/></svg></span><span>Scan code<small>By barcode</small></span></div>
+            <div class="sbtn b"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#bff0d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span><span>Scan ingredients<small>By label photo</small></span></div>
+            <p class="lbl">Supermarkets</p>
+            <div class="chips"><span>Tesco</span><span>Sainsbury's</span><span>Asda</span><span>Morrisons</span><span>Aldi</span></div>
+            <p class="lbl">Recently found</p>
+            <div class="row g"><span>Salted potato crisps</span><em>Halal</em></div>
+            <div class="row d"><span>Chewy fruit sweets</span><em>Doubtful</em></div>
+          </div>
+        </div>
+        <div class="float a glass"><i>✓</i>Halal</div>
+        <div class="float b glass"><i>✕</i>Haram: contains alcohol</div>
+        <div class="float c glass"><i>!</i>Doubtful: unknown flavouring</div>
+      </div>
     </div>
-    <div class="grid two">
-      ${devCard}
-      <div class="card"><h3>Active devices per day</h3>${bars('active_devices')}</div>
-      <div class="card"><h3>What the database says</h3>
-        <div class="split"><i style="width:${pc(o.halal)}%;background:var(--green)"></i><i style="width:${pc(o.doubtful)}%;background:#F5A524"></i><i style="width:${pc(o.haram)}%;background:var(--red)"></i></div>
-        <div class="legend"><span><span class="dot" style="background:var(--green)"></span>Halal ${num(o.halal)}</span><span><span class="dot" style="background:#F5A524"></span>Doubtful ${num(o.doubtful)}</span><span><span class="dot" style="background:var(--red)"></span>Haram ${num(o.haram)}</span></div>
-        <p class="sub" style="margin-top:16px">${num(o.contributors_all)} different phones have contributed since launch.</p></div>
-      <div class="card"><h3>Active contributors per day</h3>${bars('contributors')}</div>
-      <div class="card"><h3>New products per day</h3>${bars('new_products')}</div>
-      <div class="card"><h3>Latest activity</h3><div class="list">${act.slice(0,6).map(a=>`<div class="row"><div><div class="t">${esc(a.kind)}</div><div class="s">${esc(a.barcode)}${a.detail?' · '+esc(a.detail):''}</div></div><div class="s">${ago(a.at)}</div></div>`).join('')||'<div class="empty">Nothing yet</div>'}</div></div>
+
+    <section id="features">
+      <div class="head">
+        <h2>Everything you need in the aisle</h2>
+        <p class="intro">Built for quick checks while you shop. Open it, point the camera, read the answer.</p>
+      </div>
+      <div class="bento">
+        <article class="card glass c1"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#0f6b3e" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6v12M8 6v12M12 6v12M16 6v12M20 6v12"/></svg></div><h3>Scan the barcode</h3><p>Known products show their answer and ingredients straight away.</p></article>
+        <article class="card glass c2"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#0f6b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div><h3>Photograph the ingredients</h3><p>Not in the app yet? Take a photo of the label. The app reads the list and checks every ingredient, and you can save the product for the next shopper.</p></article>
+        <article class="card glass c3"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#0f6b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg></div><h3>See why</h3><p>Flagged ingredients are marked, with a plain explanation.</p></article>
+        <article class="card glass c4"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#0f6b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><h3>Find it in UK shops</h3><p>Tag the supermarkets where you found a product and see where others did.</p></article>
+        <article class="card glass c5"><div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#0f6b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h12l-3-3M17 17H5l3 3"/></svg></div><h3>Swap suggestions</h3><p>If a product doesn't pass, see alternatives that do.</p></article>
+        <article class="card glass c6"><div class="txt"><div class="glyph" style="margin-bottom:10px"><svg viewBox="0 0 24 24" fill="none" stroke="#0f6b3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h3>Private by design</h3><p>No account, no ads and no selling your information. Your history stays on your phone.</p></div><a class="btn ghost" href="privacy.html">Read the privacy policy</a></article>
+      </div>
+    </section>
+
+    <section id="answers">
+      <div class="head">
+        <h2>Three possible answers</h2>
+        <p class="intro">Each one comes with the ingredients behind it.</p>
+      </div>
+      <div class="trio">
+        <div class="ans glass"><span class="tag">Halal</span><p>Nothing in the ingredients list is a problem.</p></div>
+        <div class="ans glass d"><span class="tag">Doubtful</span><p>An ingredient could be fine or not, such as gelatine or E471, where the source isn't stated. Check the packaging for a halal mark.</p></div>
+        <div class="ans glass r"><span class="tag">Haram</span><p>Something that is not allowed, such as pork or alcohol, is in the list.</p></div>
+      </div>
+      <p class="guide">The app is a guide, not a religious ruling or a halal certificate. If you need a ruling, ask a qualified person. If you have an allergy, always read the label yourself.</p>
+    </section>
+
+    <section id="how">
+      <div class="head"><h2>How it works</h2></div>
+      <ol class="steps">
+        <li class="glass"><h3>Scan</h3><p>Point your camera at the barcode.</p></li>
+        <li class="glass"><h3>Photograph if needed</h3><p>No result? Take a photo of the ingredients list instead.</p></li>
+        <li class="glass"><h3>Read the reason</h3><p>See the answer and which ingredient caused it.</p></li>
+      </ol>
+    </section>
+
+    <section style="padding-top:0">
+      <div class="twocol">
+        <div class="box glass">
+          <h3>Where the information comes from</h3>
+          <p>Product names and ingredients come partly from <a href="https://world.openfoodfacts.org" rel="noopener">Open Food Facts</a>, a free, open database kept by volunteers, and partly from shoppers using the app.</p>
+          <p>When you photograph a label, an AI service reads the text. The photo is not kept. The ingredients are then checked against our own list of halal, doubtful and haram ingredients.</p>
+        </div>
+        <div class="box glass">
+          <h3>Something wrong?</h3>
+          <p>Every product page has a report button, and you can tap "Is this result right?" on any result.</p>
+          <p>You can also email us at <a href="mailto:halalcheckuk@gmail.com">halalcheckuk@gmail.com</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="head"><h2>Questions people ask</h2><p class="intro">Short answers about how Halal Check UK works.</p></div>
+      <div class="twocol" style="grid-template-columns:1fr">
+        <details class="box glass"><summary><h3>Is Halal Check UK free?</h3></summary><p>Yes. The app is free, has no ads and needs no account.</p></details>
+        <details class="box glass"><summary><h3>How does Halal Check UK decide if a food is halal?</h3></summary><p>It reads the ingredients list, from a barcode lookup or a photo of the label, and checks every ingredient against its own list of halal, doubtful and haram ingredients. The result shows which ingredient decided the answer.</p></details>
+        <details class="box glass"><summary><h3>Does a halal certificate change the result?</h3></summary><p>A halal certificate can clear ingredients whose source is unclear, such as gelatine or E471. Pork, blood and alcohol stay haram even with a certificate.</p></details>
+        <details class="box glass"><summary><h3>Is Halal Check UK a religious ruling?</h3></summary><p>No. It is a guide, not a fatwa or a halal certificate. For a ruling, ask a qualified scholar. If you have an allergy, always read the label yourself.</p></details>
+        <details class="box glass"><summary><h3>Which phones does it work on?</h3></summary><p>Android first, with a small test group before the public launch on Google Play. iPhone is planned next.</p></details>
+      </div>
+    </section>
+
+    <section id="guides" style="padding-top:0">
+      <div class="head"><h2>Halal ingredient guides</h2><p class="intro">Plain answers on ingredients people often ask about.</p></div>
+      <div class="trio">
+        <a class="ans glass" href="gelatine-halal.html" style="text-decoration:none;color:inherit"><span class="tag">Guide</span><h3 style="margin:0">Is gelatine halal?</h3><p>Gelatine is made from animal collagen, so whether it is halal depends on the animal and how it was prepared. Here is how to read the label.</p></a>
+        <a class="ans glass" href="e471-halal.html" style="text-decoration:none;color:inherit"><span class="tag">Guide</span><h3 style="margin:0">Is E471 halal?</h3><p>E471 appears in bread, cakes, ice cream and spreads. It can come from plants or animals, which is why the label alone does not tell you.</p></a>
+        <a class="ans glass" href="carmine-e120-halal.html" style="text-decoration:none;color:inherit"><span class="tag">Guide</span><h3 style="margin:0">Is carmine (E120) halal?</h3><p>Carmine, also called cochineal or E120, is a red dye made from insects. Scholars differ, so it is worth knowing what it is.</p></a>
+      </div>
+    </section>
+
+    <section id="join" style="padding-top:0">
+      <div class="band glass">
+        <h2>Android first. Want to try it?</h2>
+        <p>We're running a small test before the public launch on Google Play. Send us the Gmail address you use on your Android phone and we'll invite you.</p>
+        <a class="btn" href="mailto:halalcheckuk@gmail.com?subject=Join%20the%20Halal%20Check%20UK%20test">Email to join the test</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Halal Check UK, published by The One+ Apps</span>
+      <span><a href="gelatine-halal.html">Gelatine</a> &nbsp; <a href="e471-halal.html">E471</a> &nbsp; <a href="carmine-e120-halal.html">Carmine</a> &nbsp; <a href="privacy.html">Privacy</a> &nbsp; <a href="mailto:halalcheckuk@gmail.com">Contact</a></span>
     </div>
-    <p class="sub" style="margin-top:16px">"Devices" counts every phone that opens the app (from the app version that includes counting). "Contributors" counts phones that checked a label, voted, or reported a shop.</p>`;
-  },
-  async review(){
-    const q=await api.queue();$('#bReview').textContent=q.length;
-    if(!q.length)return '<div class="card empty">Nothing is waiting for review. 🎉</div>';
-    const cards=await Promise.all(q.map(async p=>{
-      const paths=[...new Set((p.notes||[]).map(n=>(String(n).match(/Photo:\s*(\S+\.jpg)/)||[])[1]).filter(Boolean))].slice(0,3);
-      const urls=(await Promise.all(paths.map(x=>api.photo(x).catch(()=>null)))).filter(Boolean);
-      const notes=(p.notes||[]).map(n=>String(n).replace(/\.?\s*Photo:\s*\S+/,'')).filter(Boolean);
-      return `<div class="card rv" data-b="${esc(p.barcode)}">
-        <div class="photos">${urls.length?urls.map(u=>`<img src="${esc(u)}" alt="Halal label photo" data-zoom>`).join(''):'<div class="noimg">No photo sent</div>'}</div>
-        <div><h3><span class="nm" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}" title="Click to edit the name and brand">${esc(p.name||'Unnamed product')}</span></h3>
-        <div class="meta"><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span><span>${esc(p.brand||'No brand')}</span><span>· ${esc(p.barcode)}</span><span>· ${num(p.halal_claims)} halal-label report${p.halal_claims==1?'':'s'}</span><span>· ${num(p.agree_count)} agree / ${num(p.disagree_count)} disagree</span><span title="${esc(when(p.last_feedback||p.created_at))}">· requested ${ago(p.last_feedback||p.created_at)} (${esc(when(p.last_feedback||p.created_at))})</span></div>
-        <div class="ing">${esc(p.ingredients_text||'No ingredients saved.')}</div>
-        ${notes.length?`<div class="notes">${notes.slice(0,8).map(n=>`<div style="margin-top:4px">${esc(n)}</div>`).join('')}</div>`:''}
-        <div class="actions"><button class="btn" data-a="approve">Approve as Halal</button><button class="btn red" data-a="haram">Keep Haram</button><button class="btn amber" data-a="doubtful">Mark Doubtful</button><button class="btn ghost" data-a="dismiss">Dismiss</button></div></div></div>`;
-    }));
-    return `<div class="grid">${cards.join('')}</div><p class="sub" style="margin-top:14px"><b>Approve</b> shows Halal with "Confirmed by Halal Check UK". <b>Keep Haram</b> clears the reports. Check the photo and ingredients first.</p>`;
-  },
-  async added(){
-    const all=await api.added();
-    const n=all.filter(x=>x.is_new).length;$('#bAdded').textContent=n;
-    if(!all.length)return '<div class="card empty">Nothing has been added by users yet.</div>';
-    const list=addedAll?all:all.filter(x=>x.is_new);
-    const tog=`<button class="btn ghost sm" data-togseen>${addedAll?'Hide seen products':'Show seen products ('+num(all.length-n)+')'}</button>`;
-    if(!list.length)return `<div class="search" style="justify-content:space-between;align-items:center"><span class="sub">Nothing new 🎉</span>${tog}</div><div class="card empty">All user-added products have been seen.</div>`;
-    const head=`<div class="search" style="justify-content:space-between;align-items:center"><span class="sub">${num(n)} new · ${num(list.length)} shown (latest 200)</span><span style="display:flex;gap:8px">${n?'<button class="btn ghost sm" data-seenall>Mark all as seen</button>':''}${tog}</span></div>`;
-    return head+`<div class="grid">${list.map(p=>`<div class="card" data-b="${esc(p.barcode)}">
-      <h3><b class="nm" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}" title="Click to edit the name and brand">${esc(p.name||'Unnamed product')}</b> ${p.is_new?'<span class="pill" style="background:#F5A524;color:#fff">NEW</span>':''}</h3>
-      <div class="meta" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:13px;color:var(--muted)"><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span><span>${esc(p.brand||'No brand')}</span><span>· ${esc(p.barcode)}</span><span>· added ${ago(p.created_at)}</span></div>
-      <div class="ing">${esc(p.ingredients_text||'No ingredients saved.')}</div>
-      <div class="actions"><button class="btn sm" data-a="approve">Approve as Halal</button><button class="btn sm amber" data-a="doubtful">Doubtful</button><button class="btn sm red" data-a="haram">Haram</button>${p.is_new?'<button class="btn sm ghost" data-seen>Mark as seen</button>':''}<button class="btn sm ghost" data-del="1" style="border-color:#c0392b;color:#c0392b;background:#fff">Delete</button></div></div>`).join('')}</div>
-    <p class="sub" style="margin-top:14px">Products saved by app users from a label photo. <b>Approve</b> shows Halal with "Confirmed by Halal Check UK".</p>`;
-  },
-  async reports(){
-    const r=await api.reports();
-    if(!r.length){$('#bReports').textContent=0;return '<div class="card empty">No open reports.</div>'}
-    const groups=new Map();
-    for(const x of r){if(!groups.has(x.barcode))groups.set(x.barcode,[]);groups.get(x.barcode).push(x)}
-    $('#bReports').textContent=groups.size;
-    const cards=await Promise.all([...groups.values()].map(async list=>{
-      const p=list[0];
-      const items=await Promise.all(list.map(async x=>{const path=(String(x.note||'').match(/Photo:\s*(\S+\.jpg)/)||[])[1];const url=path?await api.photo(path).catch(()=>null):null;return {...x,url,text:String(x.note||'').replace(/\.?\s*Photo:\s*\S+/,'')}}));
-      const ids=list.map(x=>x.id).join(',');
-      const img=p.image_url?`<img src="${esc(p.image_url)}" alt="Product picture" data-zoom style="width:96px;height:96px;object-fit:contain;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:zoom-in">`:'<div class="noimg" style="width:96px;height:96px">No picture</div>';
-      const ing=p.ingredients_text?esc(p.ingredients_text):'<i>No ingredients saved for this product.</i>';
-      return `<div class="card" data-b="${esc(p.barcode)}" data-ids="${ids}" style="margin-bottom:12px">
-        <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">${img}
-          <div style="flex:1;min-width:200px"><div class="t"><span class="nm" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}" title="Click to edit the name and brand">${esc(p.name||'Unknown product')}</span> <span class="pill ${esc(p.verdict||'doubtful')}">${esc(p.verdict||'?')}</span></div>
-          <div class="s">${p.brand?esc(p.brand)+' · ':''}Barcode ${esc(p.barcode)}${p.trust_level?' · '+esc(p.trust_level):''}</div>
-          <div class="notes" style="margin-top:8px"><b>Ingredients:</b> ${ing}</div></div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn sm" data-a="approve">Halal</button><button class="btn sm amber" data-a="doubtful">Doubtful</button><button class="btn sm red" data-a="haram">Haram</button><button class="btn sm ghost" data-resolve>Mark done</button><button class="btn sm red" data-delall>Delete</button></div></div>
-        <div style="margin-top:12px;border-top:1px solid var(--line)">${items.map(x=>`<div style="padding:8px 0" data-rid="${x.id}"><div class="s">${ago(x.created_at)} · <a href="#" data-delrep style="color:var(--red)">Delete this report</a></div><div style="white-space:pre-line">${esc(x.text)}</div>${x.url?`<div class="photos" style="margin-top:8px"><img src="${esc(x.url)}" alt="Photo from the report" data-zoom></div>`:''}</div>`).join('')}</div></div>`}));
-    return cards.join('')+'<p class="sub">Halal, Doubtful or Haram changes the product and clears all its reports. Mark done only clears the reports.</p>';
-  },
-  async products(){
-    const f=await api.filters();pf.f=f;
-    const so=f.stores.map(x=>`<option value="${esc(x.store)}">${esc(x.store)} (${num(x.count)})</option>`).join('');
-    const co=f.categories.map(x=>`<option value="${esc(x.category)}">${esc(x.category)} (${num(x.count)})</option>`).join('');
-    return `<div class="fbar"><input type="search" id="q" placeholder="Search name, brand or barcode" value="${esc(pf.q)}"><select id="fs"><option value="">All shops (${num(f.total)})</option><option value="__none__">No shop yet (${num(f.no_shop)})</option>${so}</select><select id="fc"><option value="">All categories</option>${co}</select><select id="fv"><option value="">All verdicts</option><option value="halal">Halal</option><option value="doubtful">Doubtful</option><option value="haram">Haram</option></select><button class="btn" id="go">Search</button></div><div id="res" class="card"><div class="empty">Loading…</div></div><div class="pg" id="pg"></div>`;
-  },
-  async insights(){
-    const [i,o]=await Promise.all([api.insights(),api.overview()]);setBadges(o);
-    const col=(arr,k,c)=>{const m=Math.max(1,...arr.map(d=>d[k]));return `<div class="bars">${arr.map(d=>`<div style="height:${Math.max(3,d[k]/m*100)}%;${c?'background:'+c:''}" data-t="${esc(String(d.date).slice(5))}: ${d[k]}"></div>`).join('')}</div><div class="axis"><span>${esc(String(arr[0].date).slice(5))}</span><span>${esc(String(arr[arr.length-1].date).slice(5))}</span></div>`};
-    const stack=(rows,note)=>{const m=Math.max(1,...rows.map(r=>r.total));return (rows.length?rows.map(r=>`<div class="hb"><span class="nmx" title="${esc(r.name)}">${esc(r.name)}</span><span class="track" style="width:${Math.max(4,r.total/m*100)}%"><i style="width:${r.halal/Math.max(1,r.total)*100}%;background:var(--green)"></i><i style="width:${r.doubtful/Math.max(1,r.total)*100}%;background:#F5A524"></i><i style="width:${r.haram/Math.max(1,r.total)*100}%;background:var(--red)"></i></span><span class="v">${num(r.total)}</span></div>`).join(''):'<div class="empty" style="padding:20px">Nothing yet.</div>')+(note||'')};
-    const bar=(rows,c)=>{const m=Math.max(1,...rows.map(r=>r.total));return rows.length?rows.map(r=>`<div class="hb"><span class="nmx" title="${esc(r.name)}">${esc(r.name)}</span><span class="track"><i style="width:${r.total/m*100}%;background:${c}"></i></span><span class="v">${num(r.total)}</span></div>`).join(''):'<div class="empty" style="padding:20px">Nothing yet.</div>'};
-    const legend='<div class="legend"><span><span class="dot" style="background:var(--green)"></span>Halal</span><span><span class="dot" style="background:#F5A524"></span>Doubtful</span><span><span class="dot" style="background:var(--red)"></span>Haram</span></div>';
-    const g=i.growth;const sum=k=>g.reduce((a,d)=>a+d[k],0);
-    const startMs=new Date('2026-10-19T00:00:00').getTime();const day=Math.max(1,Math.floor((Date.now()-startMs)/864e5)+1);const end=new Date(startMs+14*864e5);
-    const ing=i.ingredients;const pcMiss=ing.total?(ing.missing/ing.total*100).toFixed(1):'0';
-    const mp=i.missing_products;const c=i.community;
-    const listMissing=ing.list.length?ing.list.map(x=>`<div class="row"><div><b>${esc(x.name||'Unnamed')}</b><div class="s">${esc(x.brand||'')} · ${esc(x.barcode)}</div></div><span class="pill ${esc(x.verdict)}">${esc(x.verdict)}</span></div>`).join(''):'<div class="empty" style="padding:20px">Every product has an ingredient list. 🎉</div>';
-    const listWanted=mp.list.length?mp.list.map(x=>`<div class="row"><div><b>${esc(x.barcode)}</b><div class="s">last scanned ${ago(x.last_seen)}</div></div><span class="pill ver">${num(x.scan_count)} scan${x.scan_count==1?'':'s'}</span></div>`).join(''):'<div class="empty" style="padding:20px">Nothing yet. This fills in as people scan products we don\'t have (after the next app update).</div>';
-    const listDisputed=c.most_disputed.length?c.most_disputed.map(x=>`<div class="row"><div><b>${esc(x.name||x.barcode)}</b><div class="s">${esc(x.barcode)}</div></div><span class="s">${num(x.agree_count)} agree · ${num(x.disagree_count)} disagree</span></div>`).join(''):'<div class="empty" style="padding:20px">No disagreements yet.</div>';
-    const disagreeRate=c.votes_30d?Math.round(c.disagree_30d/c.votes_30d*100):0;
-    return `<div class="grid ins">
-      <div class="card wide"><h3>Google Play closed test</h3><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><b style="font-size:22px">Day ${Math.min(day,14)} of 14</b><span class="sub">${num(o.devices.total)} phones have opened the app · ${num(o.devices.active_7d)} active this week</span></div><div class="prog"><i style="width:${Math.min(100,day/14*100)}%"></i></div><div class="sub">${day>=14?'The 14 days are done. You can apply for production.':'Finishes on '+end.toLocaleDateString('en-GB',{day:'numeric',month:'long'})+'. Keep adding testers until then.'}</div></div>
-      <div class="card"><h3>New products per day <span class="sub">(last 30 days · ${num(sum('new_products'))} total)</span></h3>${col(g,'new_products')}</div>
-      <div class="card"><h3>Label photos per day <span class="sub">(last 30 days · ${num(sum('label_photos'))} total)</span></h3>${col(g,'label_photos','linear-gradient(180deg,#F5B94A,#D98E0B)')}</div>
-      <div class="card"><h3>Products per shop</h3>${stack(i.by_store,`<div class="sub" style="margin-top:8px">${num(i.no_shop)} products have no shop yet. Add one in Products &rarr; "No shop yet".</div>`)}${legend}</div>
-      <div class="card"><h3>Products per category</h3>${stack(i.by_category)}${legend}</div>
-      <div class="card"><h3>Where products came from</h3>${stack(i.by_source)}${legend}</div>
-      <div class="card"><h3>Words found in Doubtful and Haram products</h3>${bar(i.flagged_words,'#D98E0B')}<div class="sub" style="margin-top:8px">Approximate: a text search of their ingredient lists. A good list to show a scholar.</div></div>
-      <div class="card mini"><h3>Missing ingredients <span class="sub">(${num(ing.missing)} of ${num(ing.total)} products · ${pcMiss}%)</span></h3><div class="prog"><i style="width:${pcMiss}%;background:linear-gradient(90deg,#F5B94A,#D98E0B)"></i></div>${listMissing}<div class="sub" style="margin-top:8px">Newest 25 shown. These stay Doubtful until someone photographs the label.</div></div>
-      <div class="card mini"><h3>Most-wanted missing products <span class="sub">(${num(mp.distinct)} barcodes)</span></h3>${listWanted}<div class="sub" style="margin-top:8px">Barcodes people scanned that we don't have anywhere, most scanned first.</div></div>
-      <div class="card mini wide"><h3>Community health</h3><div class="grid kpis" style="margin-bottom:12px"><div class="card kpi"><div class="l">Votes (30 days)</div><div class="n">${num(c.votes_30d)}</div><div class="d">${disagreeRate}% said "No"</div></div><div class="card kpi"><div class="l">Open reports</div><div class="n">${num(c.reports_open)}</div><div class="d">${num(c.reports_resolved_30d)} resolved in 30 days</div></div><div class="card kpi"><div class="l">Time to resolve</div><div class="n">${c.avg_hours_to_resolve==null?'–':num(c.avg_hours_to_resolve)+'h'}</div><div class="d">average, last 30 days</div></div></div><h3 style="font-size:14px">Most disputed products</h3>${listDisputed}</div>
-    </div>`;
-  },
-  async activity(){
-    const a=await api.activity();
-    return `<div class="card list">${a.map(x=>`<div class="row"><div><div class="t">${esc(x.kind)}</div><div class="s">${esc(x.barcode)}${x.detail?' · '+esc(x.detail):''}</div></div><div class="s">${ago(x.at)}</div></div>`).join('')||'<div class="empty">Nothing yet</div>'}</div>`;
-  }
-};
-const meta={overview:['Overview','How the app and the database are doing'],added:['Added by users','Products saved by app users, newest first'],review:['Review queue','Products waiting for your decision'],reports:['Reports','Wrong-result reports from shoppers'],products:['Products','Find a product and change its verdict'],insights:['Insights','How the catalogue and the community are growing'],activity:['Activity','The latest things shoppers did']};
-function setBadges(o){api.addedCount().then(n=>$('#bAdded').textContent=n).catch(()=>{});$('#bReview').textContent=o.waiting_review;$('#bReports').textContent=o.reports_open}
+  </footer>
+</div>
 
-let addedAll=false;
-const pf={q:'',store:'',cat:'',verdict:'',offset:0,limit:40,f:null,total:0};
-function readFilters(){pf.q=($('#q')||{}).value||'';pf.store=($('#fs')||{}).value||'';pf.cat=($('#fc')||{}).value||'';pf.verdict=($('#fv')||{}).value||''}
-async function productRows(){
-  const box=$('#res');if(!box)return;
-  readFilters();
-  const r=await api.browse({p_store:pf.store||null,p_category:pf.cat||null,p_verdict:pf.verdict||null,p_query:pf.q,p_limit:pf.limit,p_offset:pf.offset});
-  const list=r.items||[];pf.total=r.total||0;
-  if(!list.length&&pf.offset>0){pf.offset=Math.max(0,pf.offset-pf.limit);return productRows()}
-  const all=(pf.f&&pf.f.stores||[]).map(x=>x.store);
-  const pg=$('#pg');
-  const from=list.length?pf.offset+1:0,to=pf.offset+list.length;
-  if(pg)pg.innerHTML=`<span>Showing ${from}–${to} of ${num(pf.total)}</span><span><button class="btn sm ghost" id="pgPrev" ${pf.offset<=0?'disabled':''}>Previous</button> <button class="btn sm ghost" id="pgNext" ${to>=pf.total?'disabled':''}>Next</button></span>`;
-  if(!list.length){box.innerHTML='<div class="empty">No products found.</div>';return}
-  box.innerHTML=`<table><tr><th>Product</th><th>Category</th><th>Verdict</th><th>Shops</th><th></th></tr>${list.map(p=>{
-    const have=p.stores||[];const free=all.filter(x=>!have.includes(x));
-    const img=p.image_url?`<img class="pimg" src="${esc(p.image_url)}" alt="" data-zoom>`:'<div class="pimg none">No pic</div>';
-    return `<tr data-b="${esc(p.barcode)}"><td><div style="display:flex;gap:10px;align-items:center">${img}<div><b class="nm" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}" title="Click to edit the name and brand">${esc(p.name||'Unnamed product')}</b><div class="s" style="color:var(--muted);font-size:13px">${esc(p.brand||'')} · ${esc(p.barcode)}${['confirmed','scholar'].includes(p.trust_level)?' · <span class="pill ver">Verified</span>':''}${p.has_ingredients?'':' · no ingredients'}</div></div></div></td><td>${esc(p.category||'')}</td><td><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span></td><td>${have.length?have.map(x=>`<span class="chip">${esc(x)} <a data-shop-rm="${esc(x)}" title="Remove this shop">×</a></span>`).join(''):'<span class="nosh">No shop yet</span>'}${free.length?`<select class="addshop" data-shop-add><option value="">+ Add shop</option>${free.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('')}</select>`:''}</td><td style="white-space:nowrap"><button class="btn sm" data-a="approve">Halal</button> <button class="btn sm amber" data-a="doubtful">Doubtful</button> <button class="btn sm red" data-a="haram">Haram</button> <button class="btn sm ghost" data-del="1" title="Delete this product" style="border-color:#c0392b;color:#c0392b">Delete</button></td></tr>`}).join('')}</table>`;
-}
-
-let current='overview';
-async function show(v){
-  current=v;
-  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
-  $('#title').textContent=meta[v][0];$('#subtitle').textContent=meta[v][1];
-  const el=$('#view');el.innerHTML='<div class="card empty">Loading…</div>';
-  try{el.innerHTML=await views[v]();if(v==='products'){pf.offset=0;productRows();}}
-  catch(e){el.innerHTML=`<div class="card empty">Could not load: ${esc(e.message)}<br><small>If this says "not allowed", your email is not in the admins list.</small></div>`}
-}
-
-document.addEventListener('click',async e=>{
-  const nav=e.target.closest('#nav button');if(nav)return show(nav.dataset.v);
-  if(e.target.matches('[data-zoom]')){const l=document.createElement('div');l.className='lightbox';l.innerHTML=`<img src="${esc(e.target.src)}" alt="">`;l.onclick=()=>l.remove();document.body.append(l);return}
-  if(e.target.id==='go'){pf.offset=0;return productRows()}
-  if(e.target.id==='pgPrev'){pf.offset=Math.max(0,pf.offset-pf.limit);return productRows()}
-  if(e.target.id==='pgNext'){pf.offset+=pf.limit;return productRows()}
-  const sr=e.target.closest('[data-shop-rm]');
-  if(sr){const b=sr.closest('[data-b]').dataset.b,st=sr.dataset.shopRm;if(!await askConfirm('Remove '+st+'?','This product will no longer show as sold at '+st+'.','Remove',true))return;try{await api.setStore(b,st,false);toast('Shop removed');productRows()}catch(err){toast('Error: '+err.message)}return}
-  const ed=e.target.closest('[data-edit]');
-  if(ed){
-    const row=ed.closest('[data-b]');const b=row.dataset.b;
-    const oldName=row.querySelector('b').textContent;
-    const oldBrand=(row.querySelector('.s').textContent.split(' · ')[0]||'').trim();
-    const r=await askEdit('Rename product',[{label:'Product name',value:oldName,required:true},{label:'Brand (optional)',value:oldBrand}]);if(!r)return;const [n,br]=r;
-    try{await api.edit(b,n,br);toast('Saved');productRows()}catch(err){toast('Error: '+err.message)}
-    return}
-  if(e.target.closest('[data-togseen]')){addedAll=!addedAll;show('added');return}
-  if(e.target.closest('[data-seenall]')){try{await api.seen(null);toast('All marked as seen');show('added')}catch(err){toast('Error: '+err.message)}return}
-  const sn=e.target.closest('[data-seen]');
-  if(sn){const b=sn.closest('[data-b]').dataset.b;try{await api.seen(b);show('added')}catch(err){toast('Error: '+err.message)}return}
-  const del=e.target.closest('[data-del]');
-  if(del){
-    const row=del.closest('[data-b]');const b=row.dataset.b;
-    const name=row.querySelector('b').textContent;
-    if(!await askConfirm('Delete this product?','"'+name+'" ('+b+') will be deleted for good, with its votes and reports. This cannot be undone.','Delete',true))return;
-    del.disabled=true;
-    try{await api.del(b);toast('Deleted');current==='added'?show('added'):productRows()}catch(err){toast('Error: '+err.message);del.disabled=false}
-    return}
-  const dec=e.target.closest('[data-a]');
-  if(dec){
-    const row=dec.closest('[data-b]');const b=row.dataset.b,a=dec.dataset.a;
-    if(a==='approve'&&!await askConfirm('Approve as Halal?','This shows Halal with "Confirmed by Halal Check UK". Check the photo and ingredients first.','Approve as Halal'))return;
-    dec.disabled=true;
-    try{await api.decide(b,a);if(current==='added')await api.seen(b);if(current==='reports'){for(const id of (row.dataset.ids||'').split(',').filter(Boolean))await api.resolve(Number(id))}toast('Saved');current==='products'?productRows():show(current)}catch(err){toast('Error: '+err.message);dec.disabled=false}
-    return}
-  const ep=e.target.closest('[data-editp]');
-  if(ep){
-    const box=ep.closest('[data-b]');const b=box.dataset.b;
-    const r=await askEdit('Rename product',[{label:'Product name',value:ep.dataset.name||'',required:true},{label:'Brand (optional)',value:ep.dataset.brand||''}]);if(!r)return;const [n,br]=r;
-    try{await api.edit(b,n,br);toast('Saved');current==='products'?productRows():show(current)}catch(err){toast('Error: '+err.message)}
-    return}
-  const dr=e.target.closest('[data-delrep]');
-  if(dr){e.preventDefault();const id=Number(dr.closest('[data-rid]').dataset.rid);if(!await askConfirm('Delete this report?','It will be deleted for good. This cannot be undone.','Delete',true))return;try{await api.delReport(id);toast('Report deleted');show('reports')}catch(err){toast('Error: '+err.message)}return}
-  const da=e.target.closest('[data-delall]');
-  if(da){const box=da.closest('[data-ids]');const ids=(box.dataset.ids||'').split(',').filter(Boolean).map(Number);if(!await askConfirm('Delete '+ids.length+' report'+(ids.length==1?'':'s')+'?','They will be deleted for good. The product itself is kept. This cannot be undone.','Delete',true))return;da.disabled=true;try{for(const id of ids)await api.delReport(id);toast('Reports deleted');show('reports')}catch(err){toast('Error: '+err.message);da.disabled=false}return}
-  const res=e.target.closest('[data-resolve]');
-  if(res){const box=res.closest('[data-ids]');const ids=(box.dataset.ids||'').split(',').filter(Boolean).map(Number);res.disabled=true;try{for(const id of ids)await api.resolve(id);box.remove();toast('Marked done');show('reports')}catch(err){toast('Error: '+err.message);res.disabled=false}}
+<script>
+// Pointer spotlight: each glass panel lights up where the pointer is.
+document.querySelectorAll('.glass').forEach(function (el) {
+  el.addEventListener('pointermove', function (e) {
+    var r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
 });
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='q'){pf.offset=0;productRows()}});
-document.addEventListener('change',async e=>{
-  if(['fs','fc','fv'].includes(e.target.id)){pf.offset=0;return productRows()}
-  if(e.target.matches('[data-shop-add]')&&e.target.value){const b=e.target.closest('[data-b]').dataset.b,st=e.target.value;e.target.disabled=true;try{await api.setStore(b,st,true);toast(st+' added');productRows()}catch(err){toast('Error: '+err.message);e.target.disabled=false}}
-});
-$('#out').onclick=()=>api.signOut();
-$('#loginForm').onsubmit=async e=>{
-  e.preventDefault();$('#loginErr').textContent='';
-  try{await api.signIn($('#em').value.trim(),$('#pw').value);start()}catch(err){$('#loginErr').textContent='Sign-in failed. Check your email and password.'}
-};
-async function start(){
-  const u=await api.user();
-  if(!u){$('#login').classList.remove('hidden');$('#app').classList.add('hidden');return}
-  $('#login').classList.add('hidden');$('#app').classList.remove('hidden');
-  $('#who').textContent=u.email;if(DEMO)$('#demoTag').classList.remove('hidden');
-  show('overview');
-}
-start();
 </script>
+
 </body>
 </html>
