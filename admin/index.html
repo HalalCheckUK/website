@@ -145,6 +145,13 @@ tbody tr,table tr[data-b]{transition:background .12s}table tr[data-b]:hover{back
 .ins{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}.ins .wide{grid-column:1/-1}
 .mini .row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}.mini .row:first-child{border-top:0}.mini .row b{font-weight:700}.mini .row .s{color:var(--muted);font-size:12.5px}
 @media(max-width:520px){.ins{grid-template-columns:1fr}.hb{grid-template-columns:90px 1fr 44px}}
+.dlg-back{position:fixed;inset:0;background:rgba(8,42,30,.45);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:18px;z-index:20;animation:fade .15s}
+.dlg{background:#fff;border-radius:24px;box-shadow:0 30px 80px rgba(8,42,30,.35);width:100%;max-width:440px;padding:26px;animation:pop .18s}
+.dlg h3{margin:0 0 6px;font-size:20px;letter-spacing:-.4px}.dlg p{margin:0 0 14px;color:var(--muted);font-size:14.5px;white-space:pre-line}
+.dlg label{margin:12px 0 6px}.dlg input[type=text]{width:100%;height:46px;border:1px solid var(--line);border-radius:14px;padding:0 14px;font:inherit}
+.dlg .err{min-height:16px;margin-top:6px}
+.dlg .acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+@keyframes fade{from{opacity:0}to{opacity:1}}@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -194,6 +201,28 @@ const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ago=d=>{const s=(Date.now()-new Date(d))/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';return Math.floor(s/86400)+' d ago'};
 const num=n=>Number(n||0).toLocaleString('en-GB');
+/* Pop-up dialogs in the same style as the page (instead of the browser's plain boxes). */
+function dialog({title,text='',fields=[],ok='OK',danger=false,cancel='Cancel'}){
+  return new Promise(resolve=>{
+    const back=document.createElement('div');back.className='dlg-back';
+    back.innerHTML=`<form class="dlg" role="dialog" aria-modal="true"><h3>${esc(title)}</h3>${text?`<p>${esc(text)}</p>`:''}${fields.map((f,i)=>`<label for="dlg${i}">${esc(f.label)}</label><input type="text" id="dlg${i}" value="${esc(f.value||'')}" autocomplete="off">`).join('')}<div class="err"></div><div class="acts"><button type="button" class="btn ghost" data-x>${esc(cancel)}</button><button type="submit" class="btn ${danger?'red':''}">${esc(ok)}</button></div></form>`;
+    const done=v=>{back.remove();document.removeEventListener('keydown',onKey);resolve(v)};
+    const onKey=e=>{if(e.key==='Escape')done(null)};
+    document.addEventListener('keydown',onKey);
+    back.addEventListener('mousedown',e=>{if(e.target===back)done(null)});
+    back.querySelector('[data-x]').onclick=()=>done(null);
+    back.querySelector('form').onsubmit=e=>{
+      e.preventDefault();
+      const vals=fields.map((f,i)=>back.querySelector('#dlg'+i).value.trim());
+      const bad=fields.findIndex((f,i)=>f.required&&!vals[i]);
+      if(bad>=0){back.querySelector('.err').textContent=fields[bad].label+' cannot be empty.';back.querySelector('#dlg'+bad).focus();return}
+      done(fields.length?vals:true)};
+    document.body.append(back);
+    const first=back.querySelector('input');(first||back.querySelector('button[type=submit]')).focus();if(first)first.select();
+  });
+}
+const askConfirm=(title,text,ok,danger)=>dialog({title,text,ok,danger}).then(v=>v===true);
+const askEdit=(title,fields,ok)=>dialog({title,fields,ok:ok||'Save'});
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),2600)}
 
 /* ── Data layer: demo data or Supabase ── */
@@ -414,15 +443,13 @@ document.addEventListener('click',async e=>{
   if(e.target.id==='pgPrev'){pf.offset=Math.max(0,pf.offset-pf.limit);return productRows()}
   if(e.target.id==='pgNext'){pf.offset+=pf.limit;return productRows()}
   const sr=e.target.closest('[data-shop-rm]');
-  if(sr){const b=sr.closest('[data-b]').dataset.b,st=sr.dataset.shopRm;if(!confirm('Remove '+st+' from this product?'))return;try{await api.setStore(b,st,false);toast('Shop removed');productRows()}catch(err){toast('Error: '+err.message)}return}
+  if(sr){const b=sr.closest('[data-b]').dataset.b,st=sr.dataset.shopRm;if(!await askConfirm('Remove '+st+'?','This product will no longer show as sold at '+st+'.','Remove',true))return;try{await api.setStore(b,st,false);toast('Shop removed');productRows()}catch(err){toast('Error: '+err.message)}return}
   const ed=e.target.closest('[data-edit]');
   if(ed){
     const row=ed.closest('[data-b]');const b=row.dataset.b;
     const oldName=row.querySelector('b').textContent;
     const oldBrand=(row.querySelector('.s').textContent.split(' · ')[0]||'').trim();
-    const n=prompt('Product name:',oldName);if(n===null)return;
-    if(!n.trim()){toast('The name cannot be empty');return}
-    const br=prompt('Brand (leave empty for none):',oldBrand);if(br===null)return;
+    const r=await askEdit('Rename product',[{label:'Product name',value:oldName,required:true},{label:'Brand (optional)',value:oldBrand}]);if(!r)return;const [n,br]=r;
     try{await api.edit(b,n,br);toast('Saved');productRows()}catch(err){toast('Error: '+err.message)}
     return}
   if(e.target.closest('[data-seenall]')){try{await api.seen(null);toast('All marked as seen');show('added')}catch(err){toast('Error: '+err.message)}return}
@@ -432,29 +459,27 @@ document.addEventListener('click',async e=>{
   if(del){
     const row=del.closest('[data-b]');const b=row.dataset.b;
     const name=row.querySelector('b').textContent;
-    if(!confirm('Delete "'+name+'" ('+b+') for good?\nIts votes and reports are deleted too. This cannot be undone.'))return;
+    if(!await askConfirm('Delete this product?','"'+name+'" ('+b+') will be deleted for good, with its votes and reports. This cannot be undone.','Delete',true))return;
     del.disabled=true;
     try{await api.del(b);toast('Deleted');current==='added'?show('added'):productRows()}catch(err){toast('Error: '+err.message);del.disabled=false}
     return}
   const dec=e.target.closest('[data-a]');
   if(dec){
     const row=dec.closest('[data-b]');const b=row.dataset.b,a=dec.dataset.a;
-    if(a==='approve'&&!confirm('Approve this product as Halal? Check the photo and ingredients first.'))return;
+    if(a==='approve'&&!await askConfirm('Approve as Halal?','This shows Halal with "Confirmed by Halal Check UK". Check the photo and ingredients first.','Approve as Halal'))return;
     dec.disabled=true;
     try{await api.decide(b,a);if(current==='added')await api.seen(b);if(current==='reports'){for(const id of (row.dataset.ids||'').split(',').filter(Boolean))await api.resolve(Number(id))}toast('Saved');current==='products'?productRows():show(current)}catch(err){toast('Error: '+err.message);dec.disabled=false}
     return}
   const ep=e.target.closest('[data-editp]');
   if(ep){
     const box=ep.closest('[data-b]');const b=box.dataset.b;
-    const n=prompt('Product name:',ep.dataset.name||'');if(n===null)return;
-    if(!n.trim()){toast('The name cannot be empty');return}
-    const br=prompt('Brand (leave empty for none):',ep.dataset.brand||'');if(br===null)return;
+    const r=await askEdit('Rename product',[{label:'Product name',value:ep.dataset.name||'',required:true},{label:'Brand (optional)',value:ep.dataset.brand||''}]);if(!r)return;const [n,br]=r;
     try{await api.edit(b,n,br);toast('Saved');current==='products'?productRows():show(current)}catch(err){toast('Error: '+err.message)}
     return}
   const dr=e.target.closest('[data-delrep]');
-  if(dr){e.preventDefault();const id=Number(dr.closest('[data-rid]').dataset.rid);if(!confirm('Delete this report for good? This cannot be undone.'))return;try{await api.delReport(id);toast('Report deleted');show('reports')}catch(err){toast('Error: '+err.message)}return}
+  if(dr){e.preventDefault();const id=Number(dr.closest('[data-rid]').dataset.rid);if(!await askConfirm('Delete this report?','It will be deleted for good. This cannot be undone.','Delete',true))return;try{await api.delReport(id);toast('Report deleted');show('reports')}catch(err){toast('Error: '+err.message)}return}
   const da=e.target.closest('[data-delall]');
-  if(da){const box=da.closest('[data-ids]');const ids=(box.dataset.ids||'').split(',').filter(Boolean).map(Number);if(!confirm('Delete '+ids.length+' report(s) for this product for good? The product itself is kept. This cannot be undone.'))return;da.disabled=true;try{for(const id of ids)await api.delReport(id);toast('Reports deleted');show('reports')}catch(err){toast('Error: '+err.message);da.disabled=false}return}
+  if(da){const box=da.closest('[data-ids]');const ids=(box.dataset.ids||'').split(',').filter(Boolean).map(Number);if(!await askConfirm('Delete '+ids.length+' report'+(ids.length==1?'':'s')+'?','They will be deleted for good. The product itself is kept. This cannot be undone.','Delete',true))return;da.disabled=true;try{for(const id of ids)await api.delReport(id);toast('Reports deleted');show('reports')}catch(err){toast('Error: '+err.message);da.disabled=false}return}
   const res=e.target.closest('[data-resolve]');
   if(res){const box=res.closest('[data-ids]');const ids=(box.dataset.ids||'').split(',').filter(Boolean).map(Number);res.disabled=true;try{for(const id of ids)await api.resolve(id);box.remove();toast('Marked done');show('reports')}catch(err){toast('Error: '+err.message);res.disabled=false}}
 });
