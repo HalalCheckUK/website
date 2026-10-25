@@ -199,6 +199,7 @@ const DEMO=new URLSearchParams(location.search).has('demo');
 
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const when=d=>{if(!d)return'';const t=new Date(d);return t.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+', '+t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})};
 const ago=d=>{const s=(Date.now()-new Date(d))/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';return Math.floor(s/86400)+' d ago'};
 const num=n=>Number(n||0).toLocaleString('en-GB');
 /* Pop-up dialogs in the same style as the page (instead of the browser's plain boxes). */
@@ -234,9 +235,9 @@ if(DEMO){
       devices:{total:212,android:212,ios:0,active_1d:34,active_7d:121,active_30d:190,android_7d:121,ios_7d:0,new_7d:48},
       daily:Array.from({length:14},(_,i)=>({date:day(i),active_devices:[12,15,14,22,30,26,24,31,38,35,29,40,44,34][i],new_devices:[3,4,2,7,9,5,4,8,9,7,6,11,8,10][i],contributors:[4,6,5,9,12,8,7,11,14,13,10,16,18,15][i],new_products:[3,5,2,8,12,6,4,9,11,10,7,14,9,12][i],reports:[0,1,0,2,1,0,1,2,0,1,3,1,0,2][i]}))},
     queue:[
-      {barcode:'5028217001202',name:'Chicken seasoning',brand:'Spice House',verdict:'haram',trust_level:'label_checked',ingredients_text:'Kylling, tørret ingefær 3%, tørret hvitløk 3%, salt, pepper, kanel. Kan inneholde spor av trenøtter, hvete, melk, soya, sennep og sulfitt.',halal_claims:3,agree_count:1,disagree_count:3,notes:['Halal label seen on the pack (customer report). Photo: demo/1.jpg','Halal label seen on the pack (customer report)'],photos:[]},
-      {barcode:'5012345678900',name:'Beef burgers 4 pack',brand:'Lidl',verdict:'haram',trust_level:'database',ingredients_text:'Beef (92%), rusk (wheat flour), water, salt, spices.',halal_claims:1,agree_count:0,disagree_count:1,notes:['Halal label seen on the pack (customer report)'],photos:[]},
-      {barcode:'8801234567890',name:'Marshmallows',brand:'Sweet Co',verdict:'doubtful',trust_level:'label_checked',ingredients_text:'Sugar, glucose syrup, gelatine, flavouring.',halal_claims:2,agree_count:2,disagree_count:2,notes:['Halal label seen on the pack (customer report)'],photos:[]}],
+      {last_feedback:new Date(Date.now()-5*3600000).toISOString(),barcode:'5028217001202',name:'Chicken seasoning',brand:'Spice House',verdict:'haram',trust_level:'label_checked',ingredients_text:'Kylling, tørret ingefær 3%, tørret hvitløk 3%, salt, pepper, kanel. Kan inneholde spor av trenøtter, hvete, melk, soya, sennep og sulfitt.',halal_claims:3,agree_count:1,disagree_count:3,notes:['Halal label seen on the pack (customer report). Photo: demo/1.jpg','Halal label seen on the pack (customer report)'],photos:[]},
+      {last_feedback:new Date(Date.now()-10*3600000).toISOString(),barcode:'5012345678900',name:'Beef burgers 4 pack',brand:'Lidl',verdict:'haram',trust_level:'database',ingredients_text:'Beef (92%), rusk (wheat flour), water, salt, spices.',halal_claims:1,agree_count:0,disagree_count:1,notes:['Halal label seen on the pack (customer report)'],photos:[]},
+      {last_feedback:new Date(Date.now()-15*3600000).toISOString(),barcode:'8801234567890',name:'Marshmallows',brand:'Sweet Co',verdict:'doubtful',trust_level:'label_checked',ingredients_text:'Sugar, glucose syrup, gelatine, flavouring.',halal_claims:2,agree_count:2,disagree_count:2,notes:['Halal label seen on the pack (customer report)'],photos:[]}],
     added:[
       {barcode:'5060000000011',name:'Chilli noodles',brand:'Demo Foods',verdict:'doubtful',trust_level:'label_checked',ingredients_text:'Noodles, glycerol (E422), flavour enhancers (E635), salt.',created_at:new Date(Date.now()-1800e3).toISOString(),is_new:true},
       {barcode:'5060000000028',name:'Tomato soup',brand:'',verdict:'halal',trust_level:'label_checked',ingredients_text:'Tomatoes, water, sugar, salt.',created_at:new Date(Date.now()-86400e3).toISOString(),is_new:false}],
@@ -326,7 +327,7 @@ const views={
       return `<div class="card rv" data-b="${esc(p.barcode)}">
         <div class="photos">${urls.length?urls.map(u=>`<img src="${esc(u)}" alt="Halal label photo" data-zoom>`).join(''):'<div class="noimg">No photo sent</div>'}</div>
         <div><h3><span class="nm" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}" title="Click to edit the name and brand">${esc(p.name||'Unnamed product')}</span></h3>
-        <div class="meta"><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span><span>${esc(p.brand||'No brand')}</span><span>· ${esc(p.barcode)}</span><span>· ${num(p.halal_claims)} halal-label report${p.halal_claims==1?'':'s'}</span><span>· ${num(p.agree_count)} agree / ${num(p.disagree_count)} disagree</span></div>
+        <div class="meta"><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span><span>${esc(p.brand||'No brand')}</span><span>· ${esc(p.barcode)}</span><span>· ${num(p.halal_claims)} halal-label report${p.halal_claims==1?'':'s'}</span><span>· ${num(p.agree_count)} agree / ${num(p.disagree_count)} disagree</span><span title="${esc(when(p.last_feedback||p.created_at))}">· requested ${ago(p.last_feedback||p.created_at)} (${esc(when(p.last_feedback||p.created_at))})</span></div>
         <div class="ing">${esc(p.ingredients_text||'No ingredients saved.')}</div>
         ${notes.length?`<div class="notes">${notes.slice(0,8).map(n=>`<div style="margin-top:4px">${esc(n)}</div>`).join('')}</div>`:''}
         <div class="actions"><button class="btn" data-a="approve">Approve as Halal</button><button class="btn red" data-a="haram">Keep Haram</button><button class="btn amber" data-a="doubtful">Mark Doubtful</button><button class="btn ghost" data-a="dismiss">Dismiss</button></div></div></div>`;
