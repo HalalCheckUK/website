@@ -236,7 +236,7 @@ const views={
         <div><h3><span class="nm" data-editp data-name="${esc(p.name||'')}" data-brand="${esc(p.brand||'')}" title="Click to edit the name and brand">${esc(p.name||'Unnamed product')}</span></h3>
         <div class="meta"><span class="pill ${esc(p.verdict)}">${esc(p.verdict)}</span><span>${esc(p.brand||'No brand')}</span><span>· ${esc(p.barcode)}</span><span>· ${num(p.halal_claims)} halal-label report${p.halal_claims==1?'':'s'}</span><span>· ${num(p.agree_count)} agree / ${num(p.disagree_count)} disagree</span></div>
         <div class="ing">${esc(p.ingredients_text||'No ingredients saved.')}</div>
-        ${notes.length?`<div class="notes">Shopper comments: ${notes.slice(0,5).map(esc).join(' · ')}</div>`:''}
+        ${notes.length?`<div class="notes">${notes.slice(0,8).map(n=>`<div style="margin-top:4px">${esc(n)}</div>`).join('')}</div>`:''}
         <div class="actions"><button class="btn" data-a="approve">Approve as Halal</button><button class="btn red" data-a="haram">Keep Haram</button><button class="btn amber" data-a="doubtful">Mark Doubtful</button><button class="btn ghost" data-a="dismiss">Dismiss</button></div></div></div>`;
     }));
     return `<div class="grid">${cards.join('')}</div><p class="sub" style="margin-top:14px"><b>Approve</b> shows Halal with "Confirmed by Halal Check UK". <b>Keep Haram</b> clears the reports. Check the photo and ingredients first.</p>`;
